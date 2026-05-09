@@ -60,4 +60,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+
+    /* NavigationCompose */
+    implementation(libs.androidx.navigation.compose)
 }
