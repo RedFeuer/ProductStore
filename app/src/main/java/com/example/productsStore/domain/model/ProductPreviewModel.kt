@@ -1,6 +1,6 @@
 package com.example.productsStore.domain.model
 
-data class ProductPreview(
+data class ProductPreviewModel(
     val id : Int,
     val title : String,
     val price : Double,

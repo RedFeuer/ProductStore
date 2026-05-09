@@ -1,7 +1,7 @@
 package com.example.productsStore.domain.model
 
-data class ProductsPage(
-    val products: List<ProductPreview>,
+data class ProductsPageModel(
+    val products: List<ProductPreviewModel>,
     val total: Int,
     val skip: Int,
     val limit: Int,
