@@ -7,13 +7,13 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ProductsApi {
-    @GET("products")
+    @GET("products") // https://dummyjson.com/products
     suspend fun getProductsPage(
         @Query("limit") limit: Int,
         @Query("skip") skip: Int,
         @Query("select") select: String,
     ) : ProductsPageDto
 
-    @GET
+    @GET("products/{id}")
     suspend fun getProductDetails(@Path("id") id: Int) : ProductDetailsDto
 }
