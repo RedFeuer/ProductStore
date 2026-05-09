@@ -1,8 +1,6 @@
 package com.example.productsStore.domain.model
 
-import android.accessibilityservice.GestureDescription
-
-data class ProductDetails(
+data class ProductDetailsModel(
     /** общее с preview из списка товаров */
     val id: Int,
     val title: String,
