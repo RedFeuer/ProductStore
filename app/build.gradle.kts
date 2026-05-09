@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -63,4 +64,11 @@ dependencies {
 
     /* NavigationCompose */
     implementation(libs.androidx.navigation.compose)
+
+    /* Retrofit */
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.kotlinx.serialization.converter)
+
+    /* KotlinXSerialization */
+    implementation(libs.kotlinx.serialization.json)
 }
