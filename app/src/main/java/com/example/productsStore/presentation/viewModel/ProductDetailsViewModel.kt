@@ -1,20 +1,30 @@
 package com.example.productsStore.presentation.viewModel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.productsStore.domain.useCase.GetProductDetailsUseCase
 import com.example.productsStore.presentation.state.ProductDetailsUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ProductDetailsViewModel(
-    private val productId : Int,
+@HiltViewModel
+class ProductDetailsViewModel @Inject constructor(
+    savedStateHandle : SavedStateHandle,
     private val getProductDetailsUseCase: GetProductDetailsUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<ProductDetailsUiState>(ProductDetailsUiState.Loading)
     val uiState : StateFlow<ProductDetailsUiState> = _uiState.asStateFlow()
+
+    private val productId : Int = checkNotNull(
+        savedStateHandle.get<Int>(PRODUCT_ID_ARGUMENT)
+    ) {
+        "ID продукта не найден"
+    }
 
     init {
         loadProductDetails()
@@ -39,6 +49,7 @@ class ProductDetailsViewModel(
     }
 
     private companion object {
+        const val PRODUCT_ID_ARGUMENT = "productId"
         const val ERROR_MESSAGE = "Не удалось загрузить товар"
     }
 }

@@ -6,8 +6,9 @@ import com.example.productsStore.data.remote.mapper.ProductsPageMapper
 import com.example.productsStore.domain.model.ProductDetailsModel
 import com.example.productsStore.domain.model.ProductsPageModel
 import com.example.productsStore.domain.repository.ProductsRepository
+import javax.inject.Inject
 
-class ProductsRepositoryImpl(
+class ProductsRepositoryImpl @Inject constructor (
     private val productsApi: ProductsApi,
     private val productsPageMapper: ProductsPageMapper,
     private val productsDetailsMapper: ProductDetailsMapper,

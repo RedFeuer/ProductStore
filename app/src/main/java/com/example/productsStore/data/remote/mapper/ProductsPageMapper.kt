@@ -2,8 +2,9 @@ package com.example.productsStore.data.remote.mapper
 
 import com.example.productsStore.data.remote.dto.ProductsPageDto
 import com.example.productsStore.domain.model.ProductsPageModel
+import javax.inject.Inject
 
-class ProductsPageMapper (
+class ProductsPageMapper @Inject constructor (
     private val productPreviewMapper: ProductPreviewMapper,
 ) {
     fun toDomainModel(productsDto : ProductsPageDto) : ProductsPageModel {
