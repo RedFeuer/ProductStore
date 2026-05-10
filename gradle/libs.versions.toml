@@ -1,6 +1,6 @@
 [versions]
-agp = "8.13.2"
-kotlin = "2.0.21"
+agp = "9.0.1"
+kotlin = "2.3.21"
 coreKtx = "1.17.0"
 appcompat = "1.7.1"
 material = "1.13.0"
@@ -19,6 +19,11 @@ retrofit = "3.0.0"
 
 # KotlinXSerialization
 kotlinxSerializationJson = "1.11.0"
+
+# Hilt
+hilt = "2.59.2"
+hiltNavigationCompose = "1.3.0"
+ksp = "2.3.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -52,14 +57,22 @@ retrofit-kotlinx-serialization-converter = { group = "com.squareup.retrofit2", n
 # KotlinXSerialization
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
+# Hilt & Hilt Navigation
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
 # JetpackCompose
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 # KotlinXSerialization
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+
+# Hilt
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
