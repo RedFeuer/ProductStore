@@ -66,6 +66,8 @@ dependencies {
 
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 
+    implementation(libs.androidx.compose.material.icons.core)
+
     /* NavigationCompose */
     implementation(libs.androidx.navigation.compose)
 
