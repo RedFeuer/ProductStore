@@ -1,8 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+
+    /* Hilt */
+    alias(libs.plugins.hilt)
+    /* KSP */
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -71,4 +75,9 @@ dependencies {
 
     /* KotlinXSerialization */
     implementation(libs.kotlinx.serialization.json)
+
+    /* Hilt & HiltNavigation */
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 }
