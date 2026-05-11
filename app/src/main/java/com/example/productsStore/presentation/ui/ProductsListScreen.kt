@@ -280,8 +280,8 @@ private fun shouldLoadNextPage(
     val lastVisibleItemIndex =
         listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: return false
 
+    /* N - N/4 */
     val prefetchDistance = (pageSize / PrefetchDivider).coerceAtLeast(1)
-
     val triggerIndex = (productsCount - prefetchDistance - 1).coerceAtLeast(0)
 
     return lastVisibleItemIndex >= triggerIndex
