@@ -258,7 +258,6 @@ private fun EndReachedContent(
     )
 }
 
-/* TODO: разобраться */
 private fun shouldLoadNextPage(
     listState: LazyListState,
     productsCount: Int,
