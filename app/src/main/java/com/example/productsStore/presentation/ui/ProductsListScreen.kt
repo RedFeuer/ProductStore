@@ -155,12 +155,7 @@ private fun ProductsListContent(
         }
     }
 
-    LaunchedEffect(
-        shouldLoadNextPage,
-        state.isPageLoading,
-        state.endReached,
-        state.pageErrorMessage
-    ) {
+    LaunchedEffect(shouldLoadNextPage) {
         if (shouldLoadNextPage) {
             onLoadNextPage()
         }
