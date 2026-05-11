@@ -258,6 +258,8 @@ private fun EndReachedContent(
     )
 }
 
+/** отвечает за пагинацию. начинает подгрузку следующих N элементов,
+ * когда пользователь прокручивает список до элемента N - N/4 */
 private fun shouldLoadNextPage(
     listState: LazyListState,
     productsCount: Int,
@@ -403,6 +405,8 @@ private fun ErrorContent(
     }
 }
 
+/** для пагинации - осуществляет подготовку количества элементов, которое
+ * нужно загрузить */
 @Composable
 private fun rememberCalculatedPageSize(
     viewportHeight : Dp,
