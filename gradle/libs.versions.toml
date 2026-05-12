@@ -17,6 +17,9 @@ navigationCompose = "2.9.8"
 # Retrofit
 retrofit = "3.0.0"
 
+# Room
+room = "2.8.4"
+
 # KotlinXSerialization
 kotlinxSerializationJson = "1.11.0"
 
@@ -55,6 +58,11 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 # Retrofit
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-kotlinx-serialization-converter = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
+
+# Room
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 
 # KotlinXSerialization
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
