@@ -20,7 +20,7 @@ class ProductDetailsEntityMapper @Inject constructor() {
         )
     }
 
-    fun toDto(detailsModel : ProductDetailsModel) : ProductDetailsEntity {
+    fun toEntity(detailsModel : ProductDetailsModel) : ProductDetailsEntity {
         return ProductDetailsEntity(
             id = detailsModel.id,
             title = detailsModel.title,
