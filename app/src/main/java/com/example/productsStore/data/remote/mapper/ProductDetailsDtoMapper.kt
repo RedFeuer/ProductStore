@@ -4,7 +4,7 @@ import com.example.productsStore.data.remote.dto.ProductDetailsDto
 import com.example.productsStore.domain.model.ProductDetailsModel
 import javax.inject.Inject
 
-class ProductDetailsMapper @Inject constructor() {
+class ProductDetailsDtoMapper @Inject constructor() {
     fun toDomainModel(detailsDto : ProductDetailsDto) : ProductDetailsModel {
         return ProductDetailsModel(
             id = detailsDto.id,
