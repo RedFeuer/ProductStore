@@ -1,8 +1,8 @@
 package com.example.productsStore.data.repositoryImpl
 
 import com.example.productsStore.data.remote.api.ProductsApi
-import com.example.productsStore.data.remote.mapper.ProductDetailsMapper
-import com.example.productsStore.data.remote.mapper.ProductsPageMapper
+import com.example.productsStore.data.remote.mapper.ProductDetailsDtoMapper
+import com.example.productsStore.data.remote.mapper.ProductsPageDtoMapper
 import com.example.productsStore.domain.model.ProductDetailsModel
 import com.example.productsStore.domain.model.ProductsPageModel
 import com.example.productsStore.domain.repository.ProductsRepository
@@ -10,11 +10,11 @@ import javax.inject.Inject
 
 class ProductsRepositoryImpl @Inject constructor (
     private val productsApi: ProductsApi,
-    private val productsPageMapper: ProductsPageMapper,
-    private val productsDetailsMapper: ProductDetailsMapper,
+    private val productsPageDtoMapper: ProductsPageDtoMapper,
+    private val productsDetailsMapper: ProductDetailsDtoMapper,
 ) : ProductsRepository {
     override suspend fun getProductsPage(limit: Int, skip: Int): ProductsPageModel {
-        return productsPageMapper.toDomainModel(
+        return productsPageDtoMapper.toDomainModel(
             productsApi.getProductsPage(
                 limit = limit,
                 skip = skip,
