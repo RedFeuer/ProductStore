@@ -16,4 +16,7 @@ data class ProductDetailsEntity(
     val weight: Int,
     val availabilityStatus: String, // можно потом отдельным классом сделать, в API два состояния всего
     val warrantyInformation: String,
+
+    val imageUrl: String?,
+    val loadedAsMillis: Long, // для контроля актуальности кэша
 )
