@@ -3,19 +3,24 @@ package com.example.productsStore.presentation.viewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.productsStore.domain.useCase.GetProductDetailsUseCase
+import com.example.productsStore.domain.useCase.ObserveProductDetailsUseCase
+import com.example.productsStore.domain.useCase.RefreshProductDetailsIfNeededUseCase
 import com.example.productsStore.presentation.state.ProductDetailsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ProductDetailsViewModel @Inject constructor(
     savedStateHandle : SavedStateHandle,
-    private val getProductDetailsUseCase: GetProductDetailsUseCase,
+    private val observeProductDetailsUseCase: ObserveProductDetailsUseCase,
+    private val refreshProductDetailsIfNeededUseCase: RefreshProductDetailsIfNeededUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<ProductDetailsUiState>(ProductDetailsUiState.Loading)
     val uiState : StateFlow<ProductDetailsUiState> = _uiState.asStateFlow()
@@ -26,24 +31,52 @@ class ProductDetailsViewModel @Inject constructor(
         "ID продукта не найден"
     }
 
+    private var observeProductDetailsJob: Job? = null
+    private var refreshProductDetailsJob: Job? = null
+
     init {
-        loadProductDetails()
+        observeCachedProductDetails()
+
     }
 
-    fun loadProductDetails() {
-        viewModelScope.launch {
-            _uiState.emit(ProductDetailsUiState.Loading)
+    private fun observeCachedProductDetails() {
+        observeProductDetailsJob?.cancel()
 
-            runCatching {
-                getProductDetailsUseCase(productId)
-            }.onSuccess { productDetailsModel ->
-                _uiState.emit(ProductDetailsUiState.Success(
-                    product = productDetailsModel
-                ))
-            }.onFailure { throwable ->
-                _uiState.emit(ProductDetailsUiState.Error(
-                    message = throwable.message ?: ERROR_MESSAGE
-                ))
+        observeProductDetailsJob = viewModelScope.launch {
+            observeProductDetailsUseCase(productId = productId)
+                .collectLatest { cachedProductDetailsModel ->
+                    if (cachedProductDetailsModel != null) {
+                        _uiState.value = ProductDetailsUiState.Success(
+                            product = cachedProductDetailsModel.product,
+                            isStale = cachedProductDetailsModel.isStale,
+                        )
+                    } else {
+                        val currentState = _uiState.value
+
+                        if (currentState !is ProductDetailsUiState.Success) {
+                            _uiState.emit(ProductDetailsUiState.Loading)
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun refreshProductDetails() {
+        if (refreshProductDetailsJob?.isActive == true) return
+
+        refreshProductDetailsJob = viewModelScope.launch {
+            try {
+                refreshProductDetailsIfNeededUseCase(productId = productId)
+            } catch (exception: CancellationException) {
+                throw exception
+            } catch (exception: Exception) {
+                val currentState = _uiState.value
+
+                if (currentState !is ProductDetailsUiState.Success) {
+                    _uiState.value = ProductDetailsUiState.Error(
+                        message = exception.message ?: ERROR_MESSAGE,
+                    )
+                }
             }
         }
     }
