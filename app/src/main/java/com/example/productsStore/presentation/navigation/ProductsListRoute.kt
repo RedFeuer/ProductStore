@@ -10,6 +10,7 @@ import com.example.productsStore.presentation.viewModel.ProductsListViewModel
 @Composable
 fun ProductsListRoute(
     onProductClick: (Int) -> Unit,
+    onCartClick: () -> Unit,
 ) {
     val viewModel : ProductsListViewModel = hiltViewModel()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -17,6 +18,8 @@ fun ProductsListRoute(
     ProductsListScreen(
         state = state,
         onProductClick = onProductClick,
+        onAddToCartClick = { product -> viewModel.addProductToCart(product) },
+        onCartClick = onCartClick,
         onPageSizeCalculated = { pageSize -> viewModel.loadInitialPage(pageSize) },
         onLoadNextPage = { viewModel.loadNextPage() },
         onRetryInitialLoadingClick = { viewModel.retryInitialLoading() },

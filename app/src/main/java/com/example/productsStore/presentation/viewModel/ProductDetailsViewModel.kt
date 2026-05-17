@@ -39,6 +39,10 @@ class ProductDetailsViewModel @Inject constructor(
         refreshProductDetails()
     }
 
+    fun retryLoadProductDetails() {
+        refreshProductDetails()
+    }
+
     /** первичное отображение списка товаров, даже если они устарели */
     private fun observeCachedProductDetails() {
         observeProductDetailsJob?.cancel()
