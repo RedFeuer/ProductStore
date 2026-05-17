@@ -1,5 +1,6 @@
 package com.example.productsStore.domain.model
 
+/** модель списка товаров с характеристиками для подгрузки */
 data class ProductsPageModel(
     val products: List<ProductPreviewModel>,
     /** общее количество заметок на сервер */
