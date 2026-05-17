@@ -1,12 +1,15 @@
 package com.example.productsStore.presentation.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -25,9 +28,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.example.productsStore.domain.model.ProductDetailsModel
 import com.example.productsStore.presentation.state.ProductDetailsUiState
 import java.util.Locale
@@ -65,6 +72,7 @@ fun ProductDetailsScreen(
             is ProductDetailsUiState.Success -> {
                 ProductDetailsContent(
                     product = state.product,
+                    isStale = state.isStale,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
@@ -104,6 +112,7 @@ fun ProductDetailsScreen(
 @Composable
 private fun ProductDetailsContent(
     product: ProductDetailsModel,
+    isStale: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -122,6 +131,15 @@ private fun ProductDetailsContent(
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                ProductImage(
+                    imageUrl = product.imageUrl,
+                    title = product.title,
+                )
+
+                if (isStale) {
+                    StaleDataBadge()
+                }
+
                 Text(
                     text = product.title,
                     style = MaterialTheme.typography.headlineSmall,
@@ -188,6 +206,56 @@ private fun ProductInfoRow(
             style = MaterialTheme.typography.bodyLarge,
         )
     }
+}
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+private fun ProductImage(
+    imageUrl: String?,
+    title: String,
+    modifier: Modifier = Modifier,
+) {
+    if (imageUrl == null) {
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .height(120.dp)
+                .clip(RoundedCornerShape(20.dp))
+                .background(MaterialTheme.colorScheme.surfaceContainer),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = "Изображение отсутствует",
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    } else {
+        GlideImage(
+            model = imageUrl,
+            contentDescription = title,
+            modifier = modifier
+                .fillMaxWidth()
+                .height(220.dp)
+                .clip(RoundedCornerShape(20.dp)),
+            contentScale = ContentScale.Crop,
+        )
+    }
+}
+
+@Composable
+private fun StaleDataBadge(
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        text = "Данные устарели",
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.errorContainer)
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        color = MaterialTheme.colorScheme.onErrorContainer,
+        style = MaterialTheme.typography.labelMedium,
+        fontWeight = FontWeight.Bold,
+    )
 }
 
 @Composable
