@@ -36,9 +36,10 @@ class ProductDetailsViewModel @Inject constructor(
 
     init {
         observeCachedProductDetails()
-
+        refreshProductDetails()
     }
 
+    /** первичное отображение списка товаров, даже если они устарели */
     private fun observeCachedProductDetails() {
         observeProductDetailsJob?.cancel()
 
@@ -61,6 +62,7 @@ class ProductDetailsViewModel @Inject constructor(
         }
     }
 
+    /** проверка актуальности списка товаров и отображение новых при необходимости */
     private fun refreshProductDetails() {
         if (refreshProductDetailsJob?.isActive == true) return
 
