@@ -13,10 +13,10 @@ fun AppNavigationGraph() {
     val navController = rememberNavController()
 
     NavHost(
-        /* список приложений */
         navController = navController,
         startDestination = Screen.ProductsList.route,
     ) {
+        /* список приложений */
         composable(
             route = Screen.ProductsList.route
         ) {
@@ -25,7 +25,8 @@ fun AppNavigationGraph() {
                     navController.navigate(
                         route = Screen.ProductDetails.createRoute(productId)
                     )
-                }
+                },
+                onCartClick = { navController.navigate(Screen.Cart.route) }
             )
         }
 
@@ -40,6 +41,20 @@ fun AppNavigationGraph() {
         ) {
             ProductDetailsRoute(
                 onBackClick = { navController.popBackStack() }
+            )
+        }
+
+        /* корзина с товарами */
+        composable(
+            route = Screen.Cart.route,
+        ) {
+            CartRoute(
+                onBackClick = { navController.popBackStack() },
+                onProductClick = { productId ->
+                    navController.navigate(
+                        route = Screen.ProductDetails.createRoute(productId)
+                    )
+                }
             )
         }
     }

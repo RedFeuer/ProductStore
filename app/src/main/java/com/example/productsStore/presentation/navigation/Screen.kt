@@ -5,6 +5,8 @@ sealed class Screen(
 ) {
     data object ProductsList : Screen("products_list")
 
+    data object Cart : Screen("cart")
+
     data object ProductDetails : Screen("product_details/{productId}") {
         private const val BASE_ROUTE = "product_details"
 
