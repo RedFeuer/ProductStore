@@ -18,5 +18,5 @@ data class ProductDetailsEntity(
     val warrantyInformation: String,
 
     val imageUrl: String?,
-    val loadedAsMillis: Long, // для контроля актуальности кэша
+    val loadedAtMillis: Long, // для контроля актуальности кэша
 )
