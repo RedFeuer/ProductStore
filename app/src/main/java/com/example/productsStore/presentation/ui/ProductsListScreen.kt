@@ -54,6 +54,8 @@ private const val PrefetchDivider = 4
 fun ProductsListScreen(
     state: ProductListUiState,
     onProductClick: (Int) -> Unit,
+    onAddToCartClick: (ProductPreviewModel) -> Unit,
+    onCartClick: () -> Unit,
     onPageSizeCalculated: (Int) -> Unit,
     onLoadNextPage:() -> Unit,
     onRetryInitialLoadingClick: () -> Unit,
@@ -70,6 +72,13 @@ fun ProductsListScreen(
                         text = "Товары",
                         fontWeight = FontWeight.Bold,
                     )
+                },
+                actions = {
+                    Button(
+                        onClick = onCartClick,
+                    ) {
+                        Text(text = "Корзина")
+                    }
                 }
             )
         }
@@ -94,6 +103,7 @@ fun ProductsListScreen(
                         state = state,
                         pageSize = pageSize,
                         onProductClick = onProductClick,
+                        onAddToCartClick = onAddToCartClick,
                         onLoadNextPage = onLoadNextPage,
                         onRetryNextPageClick = onRetryNextPageClick,
                         modifier = Modifier.fillMaxSize()
@@ -130,6 +140,7 @@ private fun ProductsListContent(
     state: ProductListUiState.Success,
     pageSize: Int,
     onProductClick: (Int) -> Unit,
+    onAddToCartClick: (ProductPreviewModel) -> Unit,
     onLoadNextPage: () -> Unit,
     onRetryNextPageClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -173,7 +184,8 @@ private fun ProductsListContent(
         ) { product ->
             ProductCard(
                 product = product,
-                onClick = { onProductClick(product.id) }
+                onClick = { onProductClick(product.id) },
+                onAddToCartClick = { onAddToCartClick(product) },
             )
         }
 
@@ -288,6 +300,7 @@ private fun shouldLoadNextPage(
 private fun ProductCard(
     product: ProductPreviewModel,
     onClick: () -> Unit,
+    onAddToCartClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     ElevatedCard(
@@ -335,13 +348,25 @@ private fun ProductCard(
                 )
             }
 
-            /* ценник */
-            Text(
-                text = product.price.toPriceText(),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold,
-            )
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                /* ценник */
+                Text(
+                    text = product.price.toPriceText(),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                )
+
+                /* кнопка добавить в корзину */
+                Button(
+                    onClick = onAddToCartClick,
+                ) {
+                    Text(text = "В корзину")
+                }
+            }
         }
     }
 }
