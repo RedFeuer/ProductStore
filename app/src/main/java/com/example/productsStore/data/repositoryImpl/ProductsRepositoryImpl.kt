@@ -11,6 +11,7 @@ import com.example.productsStore.data.remote.mapper.ProductDetailsDtoMapper
 import com.example.productsStore.data.remote.mapper.ProductsPageDtoMapper
 import com.example.productsStore.domain.model.CachedProductDetailsModel
 import com.example.productsStore.domain.model.CartProductModel
+import com.example.productsStore.domain.model.ProductDetailsModel
 import com.example.productsStore.domain.model.ProductPreviewModel
 import com.example.productsStore.domain.model.ProductsPageModel
 import com.example.productsStore.domain.repository.ProductsRepository
@@ -119,7 +120,7 @@ class ProductsRepositoryImpl @Inject constructor (
             .distinctUntilChanged()
     }
 
-    override suspend fun addProductToCart(product: ProductPreviewModel) {
+    override suspend fun addProductToCart(product: ProductDetailsModel) {
         cartProductDao.addProductToCart(
             productId = product.id,
             title = product.title,

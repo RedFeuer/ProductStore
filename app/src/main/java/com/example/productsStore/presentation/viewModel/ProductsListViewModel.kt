@@ -2,8 +2,6 @@ package com.example.productsStore.presentation.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.productsStore.domain.model.ProductPreviewModel
-import com.example.productsStore.domain.useCase.AddProductToCartUseCase
 import com.example.productsStore.domain.useCase.ObserveProductPreviewsUseCase
 import com.example.productsStore.domain.useCase.RefreshProductsPageUseCase
 import com.example.productsStore.presentation.state.ProductListUiState
@@ -21,7 +19,6 @@ import javax.inject.Inject
 class ProductsListViewModel @Inject constructor(
     private val observeProductPreviewsUseCase: ObserveProductPreviewsUseCase,
     private val refreshProductsPageUseCase: RefreshProductsPageUseCase,
-    private val addProductToCartUseCase: AddProductToCartUseCase,
 ) : ViewModel() {
     /** состояние UI */
     private val _uiState = MutableStateFlow<ProductListUiState>(ProductListUiState.Loading)
@@ -117,13 +114,6 @@ class ProductsListViewModel @Inject constructor(
             skip = nextSkip,
             isInitialLoading = false,
         )
-    }
-
-    /** добавляем товар в корзину */
-    fun addProductToCart(product: ProductPreviewModel) {
-        viewModelScope.launch {
-            addProductToCartUseCase(product)
-        }
     }
 
     /** получаем товары из ДБ (возможно неактуальные) */

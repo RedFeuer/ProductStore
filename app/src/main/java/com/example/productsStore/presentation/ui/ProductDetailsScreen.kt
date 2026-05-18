@@ -44,6 +44,7 @@ import java.util.Locale
 @Composable
 fun ProductDetailsScreen(
     state: ProductDetailsUiState,
+    onAddToCartClick: () -> Unit,
     onBackClick: () -> Unit,
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -73,6 +74,7 @@ fun ProductDetailsScreen(
                 ProductDetailsContent(
                     product = state.product,
                     isStale = state.isStale,
+                    onAddToCartClick = onAddToCartClick,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
@@ -113,6 +115,7 @@ fun ProductDetailsScreen(
 private fun ProductDetailsContent(
     product: ProductDetailsModel,
     isStale: Boolean,
+    onAddToCartClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -178,6 +181,13 @@ private fun ProductDetailsContent(
                     title = "Гарантия",
                     value = product.warrantyInformation,
                 )
+
+                Button(
+                    onClick = onAddToCartClick,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = "В корзину")
+                }
             }
         }
     }
