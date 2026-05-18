@@ -18,7 +18,6 @@ fun ProductsListRoute(
     ProductsListScreen(
         state = state,
         onProductClick = onProductClick,
-        onAddToCartClick = { product -> viewModel.addProductToCart(product) },
         onCartClick = onCartClick,
         onPageSizeCalculated = { pageSize -> viewModel.loadInitialPage(pageSize) },
         onLoadNextPage = { viewModel.loadNextPage() },
