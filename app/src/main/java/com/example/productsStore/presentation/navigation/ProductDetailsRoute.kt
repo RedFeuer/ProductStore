@@ -16,6 +16,7 @@ fun ProductDetailsRoute(
 
     ProductDetailsScreen(
         state = state,
+        onAddToCartClick = { viewModel.addProductToCart() },
         onBackClick = onBackClick,
         onRetryClick = { viewModel.retryLoadProductDetails() }
     )
