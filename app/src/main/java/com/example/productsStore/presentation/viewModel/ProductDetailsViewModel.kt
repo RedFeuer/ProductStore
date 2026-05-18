@@ -3,6 +3,7 @@ package com.example.productsStore.presentation.viewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.productsStore.domain.useCase.AddProductToCartUseCase
 import com.example.productsStore.domain.useCase.ObserveProductDetailsUseCase
 import com.example.productsStore.domain.useCase.RefreshProductDetailsIfNeededUseCase
 import com.example.productsStore.presentation.state.ProductDetailsUiState
@@ -19,6 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProductDetailsViewModel @Inject constructor(
     savedStateHandle : SavedStateHandle,
+    private val addProductToCartUseCase: AddProductToCartUseCase,
     private val observeProductDetailsUseCase: ObserveProductDetailsUseCase,
     private val refreshProductDetailsIfNeededUseCase: RefreshProductDetailsIfNeededUseCase,
 ) : ViewModel() {
@@ -33,10 +35,21 @@ class ProductDetailsViewModel @Inject constructor(
 
     private var observeProductDetailsJob: Job? = null
     private var refreshProductDetailsJob: Job? = null
+    private var addProductToCartJob: Job? = null
 
     init {
         observeCachedProductDetails()
         refreshProductDetails()
+    }
+
+    fun addProductToCart() {
+        val currentState = _uiState.value as? ProductDetailsUiState.Success ?: return
+
+        if (addProductToCartJob?.isActive == true) return
+
+        addProductToCartJob = viewModelScope.launch {
+            addProductToCartUseCase(product = currentState.product)
+        }
     }
 
     fun retryLoadProductDetails() {
