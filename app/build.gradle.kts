@@ -91,4 +91,7 @@ dependencies {
 
     /* Glide */
     implementation(libs.glide.compose)
+
+    /* JUnit */
+    implementation(libs.junit)
 }

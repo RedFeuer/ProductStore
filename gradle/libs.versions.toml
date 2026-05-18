@@ -32,6 +32,10 @@ material3 = "1.4.0"
 # Glide
 glideCompose = "1.0.0-beta09"
 
+# JUnit
+junit = "4.13.2"
+
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
@@ -78,6 +82,9 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3",
 
 # Glide
 glide-compose = { group = "com.github.bumptech.glide", name = "compose", version.ref = "glideCompose" }
+
+# JUnit
+junit = { group = "junit", name = "junit", version.ref = "junit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
