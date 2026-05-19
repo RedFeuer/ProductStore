@@ -1,6 +1,7 @@
 package com.example.productsStore.data.remote.mapper
 
 import com.example.productsStore.data.remote.dto.ProductPreviewDto
+import com.example.productsStore.domain.model.ProductPreviewModel
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNull
 import org.junit.Test
@@ -20,6 +21,28 @@ class ProductPreviewDtoMapperTest {
 
         // WHEN
         val actual = mapper.toDomainModel(dto)
+
+        // THEN
+        assertEquals(10, actual.id)
+        assertEquals("Red Lipstick", actual.title)
+        assertEquals(12.99, actual.price, 0.0)
+        assertEquals("Chic Cosmetics", actual.brand)
+    }
+
+    @Test
+    fun `GIVEN ProductPreviewModel WHEN map to dto THEN ProductPreviewDto`() {
+        // GIVEN
+        val mapper = ProductPreviewDtoMapper()
+
+        val domain = ProductPreviewModel(
+            id = 10,
+            title = "Red Lipstick",
+            price = 12.99,
+            brand = "Chic Cosmetics",
+        )
+
+        // WHEN
+        val actual = mapper.toDto(domain)
 
         // THEN
         assertEquals(10, actual.id)
