@@ -17,11 +17,84 @@ import com.example.productsStore.data.remote.mapper.ProductPreviewDtoMapper
 import com.example.productsStore.data.remote.mapper.ProductsPageDtoMapper
 import com.example.productsStore.data.repositoryImpl.ProductsRepositoryImpl
 import com.example.productsStore.domain.provider.time.CurrentTimeProvider
+import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.test.runTest
+import org.junit.Test
+
+// GIVEN
+
+// WHEN
+
+// THEN
 
 class ProductsRepositoryImplTest {
+    // TODO: УБРАТЬ комменты - копипаст условия - мне так проще ориентироваться, что уже покрыл
+    // Если кэш актуален (<24 ч) → данные берутся из БД, запрос в сеть не выполняется .
+    @Test
+    fun `GIVEN fresh cache WHEN refresh product details THEN do not request network`() = runTest {
+        // GIVEN
+        val currentTimeMillis = 10_000L
+        val cachedDetails = createProductDetailsEntity(
+            loadedAtMillis = currentTimeMillis - ONE_HOUR_MILLIS,
+        )
+        val productsApi = FakeProductsApi()
+        val productDetailsDao = FakeProductDetailsDao(
+            initialProductDetails = cachedDetails,
+        )
+
+        val repository = createRepository(
+            productsApi = productsApi,
+            productDetailsDao = productDetailsDao,
+            currentTimeMillis = currentTimeMillis,
+        )
+
+        // WHEN
+        repository.refreshProductDetailsIfNeeded(id = PRODUCT_ID)
+
+        // THEN
+        assertEquals(0, productsApi.getProductDetailsCallsCount)
+        assertEquals(cachedDetails, productDetailsDao.savedProductDetails)
+    }
+
+    // Если кэш устарел (>24 ч) → выполняется запрос в сеть, данные обновляются.
+    @Test
+    fun `GIVEN stale cache WHEN refresh product details THEN request network and update cache`() = runTest {
+        // GIVEN
+        val currentTimeMillis = 100_000_000L
+        val cachedDetails = createProductDetailsEntity(
+            title = "Old title",
+            loadedAtMillis = currentTimeMillis - CACHE_TTL_MILLIS - 1L,
+        )
+
+        val remoteDetails = createProductDetailsDto(
+            title = "New title",
+        )
+
+        val productsApi = FakeProductsApi(
+            productsDetailsResponse = remoteDetails,
+        )
+
+        val productDetailsDao = FakeProductDetailsDao(
+            initialProductDetails = cachedDetails,
+        )
+
+        val repository = createRepository(
+            productsApi = productsApi,
+            productDetailsDao = productDetailsDao,
+            currentTimeMillis = currentTimeMillis,
+        )
+
+        // WHEN
+        repository.refreshProductDetailsIfNeeded(PRODUCT_ID)
+
+        // THEN
+        assertEquals(1, productsApi.getProductDetailsCallsCount)
+        assertEquals("New title", productDetailsDao.savedProductDetails?.title)
+        assertEquals(currentTimeMillis, productDetailsDao.savedProductDetails?.loadedAtMillis)
+    }
 
     private fun createRepository(
         productsApi: ProductsApi = FakeProductsApi(),
@@ -79,7 +152,7 @@ class ProductsRepositoryImplTest {
             return ProductsPageDto(
                 products = emptyList(),
                 total = 0,
-                skip = 0,
+                skip = skip,
                 limit = limit,
             )
         }
