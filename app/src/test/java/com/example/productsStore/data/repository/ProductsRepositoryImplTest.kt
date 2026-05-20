@@ -9,11 +9,21 @@ import com.example.productsStore.data.local.entity.ProductPreviewEntity
 import com.example.productsStore.data.remote.api.ProductsApi
 import com.example.productsStore.data.remote.dto.ProductDetailsDto
 import com.example.productsStore.data.remote.dto.ProductsPageDto
+import com.example.productsStore.domain.provider.time.CurrentTimeProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 
 class ProductsRepositoryImplTest {
+
+    private class FakeCurrentTimeProvider(
+        private val currentTimeMillis: Long,
+    ) : CurrentTimeProvider {
+        override fun currentTimeMillis(): Long {
+            return currentTimeMillis
+        }
+
+    }
 
     private class FakeProductsApi(
         private val productsDetailsResponse: ProductDetailsDto = createProductDetailsDto(),
