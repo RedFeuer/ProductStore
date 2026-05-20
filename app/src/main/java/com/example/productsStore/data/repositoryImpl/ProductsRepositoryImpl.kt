@@ -14,6 +14,7 @@ import com.example.productsStore.domain.model.CartProductModel
 import com.example.productsStore.domain.model.ProductDetailsModel
 import com.example.productsStore.domain.model.ProductPreviewModel
 import com.example.productsStore.domain.model.ProductsPageModel
+import com.example.productsStore.domain.provider.time.CurrentTimeProvider
 import com.example.productsStore.domain.repository.ProductsRepository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
@@ -31,6 +32,7 @@ class ProductsRepositoryImpl @Inject constructor (
     private val cartProductEntityMapper: CartProductEntityMapper,
     private val productsPageDtoMapper: ProductsPageDtoMapper,
     private val productsDetailsDtoMapper: ProductDetailsDtoMapper,
+    private val currentTimeProvider: CurrentTimeProvider,
 ) : ProductsRepository {
     /** подгрузка списка из БД */
     override suspend fun observeProductPreviews(limit: Int): Flow<List<ProductPreviewModel>> {
@@ -68,7 +70,7 @@ class ProductsRepositoryImpl @Inject constructor (
                 if (productDetailsEntity != null) {
                     productsDetailsEntityMapper.toCachedDomainModel(
                         detailsEntity = productDetailsEntity,
-                        currentTimeMillis = System.currentTimeMillis(),
+                        currentTimeMillis = currentTimeProvider.currentTimeMillis(),
                         cacheTtlMillis = PRODUCT_DETAILS_CACHE_TTL_MILLIS,
                     )
                 } else {
@@ -83,7 +85,7 @@ class ProductsRepositoryImpl @Inject constructor (
      * если данные не устарели - будем брать из БД*/
     override suspend fun refreshProductDetailsIfNeeded(id: Int) {
         val cachedProductDetails = productDetailsDao.getProductDetailsById(id)
-        val currentTimeMillis = System.currentTimeMillis()
+        val currentTimeMillis = currentTimeProvider.currentTimeMillis()
 
         val isCacheFresh = (cachedProductDetails != null &&
                 currentTimeMillis - cachedProductDetails.loadedAtMillis < PRODUCT_DETAILS_CACHE_TTL_MILLIS)
