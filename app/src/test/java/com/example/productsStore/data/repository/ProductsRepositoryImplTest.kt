@@ -6,15 +6,54 @@ import com.example.productsStore.data.local.dao.ProductPreviewDao
 import com.example.productsStore.data.local.entity.CartProductEntity
 import com.example.productsStore.data.local.entity.ProductDetailsEntity
 import com.example.productsStore.data.local.entity.ProductPreviewEntity
+import com.example.productsStore.data.local.mapper.CartProductEntityMapper
+import com.example.productsStore.data.local.mapper.ProductDetailsEntityMapper
+import com.example.productsStore.data.local.mapper.ProductPreviewEntityMapper
 import com.example.productsStore.data.remote.api.ProductsApi
 import com.example.productsStore.data.remote.dto.ProductDetailsDto
 import com.example.productsStore.data.remote.dto.ProductsPageDto
+import com.example.productsStore.data.remote.mapper.ProductDetailsDtoMapper
+import com.example.productsStore.data.remote.mapper.ProductPreviewDtoMapper
+import com.example.productsStore.data.remote.mapper.ProductsPageDtoMapper
+import com.example.productsStore.data.repositoryImpl.ProductsRepositoryImpl
 import com.example.productsStore.domain.provider.time.CurrentTimeProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 
 class ProductsRepositoryImplTest {
+
+    private fun createRepository(
+        productsApi: ProductsApi = FakeProductsApi(),
+        productsPreviewDao: ProductPreviewDao = FakeProductPreviewDao(),
+        productDetailsDao: ProductDetailsDao = FakeProductDetailsDao(),
+        cartProductDao: CartProductDao = FakeCartDao(),
+        currentTimeMillis: Long = 0L,
+    ) : ProductsRepositoryImpl {
+        val productPreviewDtoMapper = ProductPreviewDtoMapper()
+        val productDetailsDtoMapper = ProductDetailsDtoMapper()
+        val productsPageDtoMapper = ProductsPageDtoMapper(
+            productPreviewDtoMapper = productPreviewDtoMapper,
+        )
+        val productPreviewEntityMapper = ProductPreviewEntityMapper()
+        val productDetailsEntityMapper = ProductDetailsEntityMapper()
+        val cartProductEntityMapper = CartProductEntityMapper()
+
+        return ProductsRepositoryImpl(
+            productsApi = productsApi,
+            productsPreviewDao = productsPreviewDao,
+            productDetailsDao = productDetailsDao,
+            cartProductDao = cartProductDao,
+            productsDetailsDtoMapper = productDetailsDtoMapper,
+            productsPageDtoMapper = productsPageDtoMapper,
+            productsPreviewEntityMapper = productPreviewEntityMapper,
+            productsDetailsEntityMapper = productDetailsEntityMapper,
+            cartProductEntityMapper = cartProductEntityMapper,
+            currentTimeProvider = FakeCurrentTimeProvider(
+                currentTimeMillis = currentTimeMillis,
+            ),
+        )
+    }
 
     private class FakeCurrentTimeProvider(
         private val currentTimeMillis: Long,
