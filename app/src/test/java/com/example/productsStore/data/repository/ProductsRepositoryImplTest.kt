@@ -96,6 +96,37 @@ class ProductsRepositoryImplTest {
         assertEquals(currentTimeMillis, productDetailsDao.savedProductDetails?.loadedAtMillis)
     }
 
+    // При отсутствии кэша → запрос идёт в сеть.
+    @Test
+    fun `GIVEN empty cache WHEN refresh product details THEN request network and save data`() = runTest {
+        // GIVEN
+        val currentTimeMillis = 200_000L
+
+        val productsApi = FakeProductsApi(
+            productsDetailsResponse = createProductDetailsDto(
+                title = "Loaded from network"
+            )
+        )
+
+        val productDetailsDao = FakeProductDetailsDao(
+            initialProductDetails = null,
+        )
+
+        val repository = createRepository(
+            productsApi = productsApi,
+            productDetailsDao = productDetailsDao,
+            currentTimeMillis = currentTimeMillis,
+        )
+
+        // WHEN
+        repository.refreshProductDetailsIfNeeded(id = PRODUCT_ID)
+
+        // THEN
+        assertEquals(1, productsApi.getProductDetailsCallsCount)
+        assertEquals("Loaded from network", productDetailsDao.savedProductDetails?.title)
+        assertEquals(currentTimeMillis, productDetailsDao.savedProductDetails?.loadedAtMillis)
+    }
+
     private fun createRepository(
         productsApi: ProductsApi = FakeProductsApi(),
         productsPreviewDao: ProductPreviewDao = FakeProductPreviewDao(),
