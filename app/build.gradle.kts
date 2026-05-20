@@ -94,4 +94,7 @@ dependencies {
 
     /* JUnit */
     implementation(libs.junit)
+
+    /* Coroutines-test */
+    testImplementation(libs.kotlinx.coroutines.test)
 }
