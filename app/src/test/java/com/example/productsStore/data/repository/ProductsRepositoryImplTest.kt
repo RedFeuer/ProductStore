@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.runTest
+import okio.IOException
 import org.junit.Test
 
 // GIVEN
@@ -125,6 +126,39 @@ class ProductsRepositoryImplTest {
         assertEquals(1, productsApi.getProductDetailsCallsCount)
         assertEquals("Loaded from network", productDetailsDao.savedProductDetails?.title)
         assertEquals(currentTimeMillis, productDetailsDao.savedProductDetails?.loadedAtMillis)
+    }
+
+    // При ошибке сети и наличии устаревших данных → возвращаются данные из БД.
+    @Test
+    fun `GIVEN stale cache and network error WHEN refresh product details THEN keep cached data`() = runTest {
+        // GIVEN
+        val currentTimeMillis = 100_000_000L
+
+        val cachedDetails = createProductDetailsEntity(
+            title = "Old cached title",
+            loadedAtMillis = currentTimeMillis - CACHE_TTL_MILLIS - 1L,
+        )
+
+        val productsApi = FakeProductsApi(
+            productsDetailsException = IOException("Network Error"),
+        )
+
+        val productDetailsDao = FakeProductDetailsDao(
+            initialProductDetails = cachedDetails,
+        )
+
+        val repository = createRepository(
+            productsApi = productsApi,
+            productDetailsDao = productDetailsDao,
+            currentTimeMillis = currentTimeMillis,
+        )
+
+        // WHEN
+        repository.refreshProductDetailsIfNeeded(id = PRODUCT_ID)
+
+        // THEN
+        assertEquals(1, productsApi.getProductDetailsCallsCount)
+        assertEquals(cachedDetails, productDetailsDao.savedProductDetails)
     }
 
     private fun createRepository(
