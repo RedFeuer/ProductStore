@@ -18,6 +18,8 @@ import com.example.productsStore.data.remote.mapper.ProductsPageDtoMapper
 import com.example.productsStore.data.repositoryImpl.ProductsRepositoryImpl
 import com.example.productsStore.domain.provider.time.CurrentTimeProvider
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNull
+import junit.framework.TestCase.fail
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -159,6 +161,72 @@ class ProductsRepositoryImplTest {
         // THEN
         assertEquals(1, productsApi.getProductDetailsCallsCount)
         assertEquals(cachedDetails, productDetailsDao.savedProductDetails)
+    }
+
+    // После успешного ответа от сети → данные сохраняются в БД с актуальной меткой времени.
+    @Test
+    fun `GIVEN successful network response WHEN refresh empty product details THEN save data with current timestamp`() = runTest {
+        // GIVEN
+        val currentTimeMillis = 555_000L
+
+        val productsApi = FakeProductsApi(
+            productsDetailsResponse = createProductDetailsDto(
+                title = "New product",
+            )
+        )
+
+        val productDetailsDao = FakeProductDetailsDao(
+            initialProductDetails = null,
+        )
+
+        val repository = createRepository(
+            productsApi = productsApi,
+            productDetailsDao = productDetailsDao,
+            currentTimeMillis = currentTimeMillis,
+        )
+
+        // WHEN
+        repository.refreshProductDetailsIfNeeded(id = PRODUCT_ID)
+
+        // THEN
+        assertEquals(1, productsApi.getProductDetailsCallsCount)
+        assertEquals(currentTimeMillis, productDetailsDao.savedProductDetails?.loadedAtMillis)
+    }
+
+    // После успешного ответа от сети → данные сохраняются в БД с актуальной меткой времени.
+    @Test
+    fun `GIVEN successful network response WHEN refresh existing product details THEN save data with current timestamp`() = runTest {
+        // GIVEN
+        val currentTimeMillis = 100_000_000L
+
+        val productsApi = FakeProductsApi(
+            productsDetailsResponse = createProductDetailsDto(
+                title = "New product",
+            )
+        )
+
+        val cachedDetails = createProductDetailsEntity(
+            title = "Old product",
+            loadedAtMillis = currentTimeMillis - CACHE_TTL_MILLIS - 1L,
+        )
+
+        val productDetailsDao = FakeProductDetailsDao(
+            initialProductDetails = cachedDetails,
+        )
+
+        val repository = createRepository(
+            productsApi = productsApi,
+            productDetailsDao = productDetailsDao,
+            currentTimeMillis = currentTimeMillis,
+        )
+
+        // WHEN
+        repository.refreshProductDetailsIfNeeded(id = PRODUCT_ID)
+
+        // THEN
+        assertEquals(1, productsApi.getProductDetailsCallsCount)
+        assertEquals("New product", productDetailsDao.savedProductDetails?.title)
+        assertEquals(currentTimeMillis, productDetailsDao.savedProductDetails?.loadedAtMillis)
     }
 
     private fun createRepository(
