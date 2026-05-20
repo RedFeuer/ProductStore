@@ -163,6 +163,42 @@ class ProductsRepositoryImplTest {
         assertEquals(cachedDetails, productDetailsDao.savedProductDetails)
     }
 
+    // При ошибке сети и отсутствии кэша → репозиторий возвращает корректный ответ который может быть обработан UI слоем.
+    @Test
+    fun `GIVEN empty cache and network error WHEN refresh product details THEN throw exception`() = runTest {
+        // GIVEN
+        val expectedException = "Network error"
+
+        val currentTimeMillis = 100_000L
+
+        val productsApi = FakeProductsApi(
+            productsDetailsException = IOException(expectedException),
+        )
+
+        val productDetailsDao = FakeProductDetailsDao(
+            initialProductDetails = null,
+        )
+
+        val repository = createRepository(
+            productsApi = productsApi,
+            productDetailsDao = productDetailsDao,
+            currentTimeMillis = currentTimeMillis,
+        )
+
+        // WHEN
+        try {
+            repository.refreshProductDetailsIfNeeded(id = PRODUCT_ID)
+            fail("Не выброшена ожидаемая ошибка: $expectedException")
+        } catch (exception: IOException) {
+            // THEN
+            assertEquals(expectedException, exception.message)
+        }
+
+        // THEN
+        assertEquals(1, productsApi.getProductDetailsCallsCount)
+        assertNull(productDetailsDao.savedProductDetails)
+    }
+
     // После успешного ответа от сети → данные сохраняются в БД с актуальной меткой времени.
     @Test
     fun `GIVEN successful network response WHEN refresh empty product details THEN save data with current timestamp`() = runTest {
