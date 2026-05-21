@@ -14,12 +14,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
-// GIVEN
-
-        // WHEN
-
-        // THEN
-
 
 @RunWith(AndroidJUnit4::class)
 class CartProductDaoTest {
@@ -76,38 +70,39 @@ class CartProductDaoTest {
 
     /* Повторное добавление → увеличивается количество, запись не дублируется . */
     @Test
-    fun givenProductAlreadyInCartWhenAddSameProductThenIncreaseQuantityWithoutDuplicate() = runBlocking {
-        // GIVEN
-        val productId = 1
-        val title = "Essence Mascara Lash Princess"
-        val price = 9.99
-        val brand = "Essence"
+    fun givenProductAlreadyInCartWhenAddSameProductThenIncreaseQuantityWithoutDuplicate() =
+        runBlocking {
+            // GIVEN
+            val productId = 1
+            val title = "Essence Mascara Lash Princess"
+            val price = 9.99
+            val brand = "Essence"
 
-        cartProductDao.addProductToCart(
-            productId = productId,
-            title = title,
-            price = price,
-            brand = brand,
-        )
+            cartProductDao.addProductToCart(
+                productId = productId,
+                title = title,
+                price = price,
+                brand = brand,
+            )
 
-        // WHEN
-        cartProductDao.addProductToCart(
-            productId = productId,
-            title = title,
-            price = price,
-            brand = brand,
-        )
+            // WHEN
+            cartProductDao.addProductToCart(
+                productId = productId,
+                title = title,
+                price = price,
+                brand = brand,
+            )
 
-        val actual = cartProductDao.observeCartProducts().first()
+            val actual = cartProductDao.observeCartProducts().first()
 
-        // THEN
-        assertEquals(1, actual.size)
+            // THEN
+            assertEquals(1, actual.size)
 
-        val cartProduct = actual.first()
+            val cartProduct = actual.first()
 
-        assertEquals(productId, cartProduct.productId)
-        assertEquals(2, cartProduct.quantity)
-    }
+            assertEquals(productId, cartProduct.productId)
+            assertEquals(2, cartProduct.quantity)
+        }
 
     /* Добавление нескольких разных товаров → все сохраняются. */
     @Test
@@ -143,5 +138,31 @@ class CartProductDaoTest {
         assertEquals(2, productIds.size)
         assertTrue(productIds.contains(firstProductId))
         assertTrue(productIds.contains(secondProductId))
+    }
+
+    @Test
+    fun givenCartWithProductsWhenClearCartThenRemoveAllProducts() = runBlocking {
+        // GIVEN
+        cartProductDao.addProductToCart(
+            productId = 1,
+            title = "Essence Mascara Lash Princess",
+            price = 9.99,
+            brand = "Essence",
+        )
+
+        cartProductDao.addProductToCart(
+            productId = 2,
+            title = "Red Lipstick",
+            price = 12.99,
+            brand = "Chic Cosmetics",
+        )
+
+        // WHEN
+        cartProductDao.clearCart()
+
+        val actual = cartProductDao.observeCartProducts().first()
+
+        // THEN
+        assertTrue(actual.isEmpty())
     }
 }
