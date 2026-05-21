@@ -107,4 +107,9 @@ dependencies {
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.kotlinx.coroutines.test)
     implementation(libs.androidx.junit.ktx)
+
+    /* KoTEA */
+    implementation(libs.kotea.core)
+    implementation(libs.kotea.android)
+    implementation(libs.kotea.compose)
 }
