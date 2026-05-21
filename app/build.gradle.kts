@@ -97,4 +97,11 @@ dependencies {
 
     /* Coroutines-test */
     testImplementation(libs.kotlinx.coroutines.test)
+
+    /* AndroidX Test */
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    implementation(libs.androidx.junit.ktx)
 }
