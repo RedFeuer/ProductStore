@@ -22,6 +22,6 @@ fun ProductsListRoute(
         onPageSizeCalculated = { pageSize -> viewModel.loadInitialPage(pageSize) },
         onLoadNextPage = { viewModel.loadNextPage() },
         onRetryInitialLoadingClick = { viewModel.retryInitialLoading() },
-        onRetryNextPageClick = { viewModel.loadNextPage() }
+        onRetryNextPageClick = { viewModel.retryNextPage() }
     )
 }
