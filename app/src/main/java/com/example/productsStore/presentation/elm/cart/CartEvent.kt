@@ -5,7 +5,7 @@ import com.example.productsStore.domain.model.CartProductModel
 sealed interface CartEvent {
     data class UserIntent(
         val intent: CartIntent,
-    )
+    ) : CartEvent
 
     data class CartProductsLoaded(
         val products: List<CartProductModel>,
