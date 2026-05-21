@@ -27,15 +27,7 @@ import kotlinx.coroutines.test.runTest
 import okio.IOException
 import org.junit.Test
 
-// GIVEN
-
-// WHEN
-
-// THEN
-
 class ProductsRepositoryImplTest {
-    // TODO: УБРАТЬ комменты - копипаст условия - мне так проще ориентироваться, что уже покрыл
-    // Если кэш актуален (<24 ч) → данные берутся из БД, запрос в сеть не выполняется .
     @Test
     fun `GIVEN fresh cache WHEN refresh product details THEN do not request network`() = runTest {
         // GIVEN
@@ -62,7 +54,6 @@ class ProductsRepositoryImplTest {
         assertEquals(cachedDetails, productDetailsDao.savedProductDetails)
     }
 
-    // Если кэш устарел (>24 ч) → выполняется запрос в сеть, данные обновляются.
     @Test
     fun `GIVEN stale cache WHEN refresh product details THEN request network and update cache`() = runTest {
         // GIVEN
@@ -99,7 +90,6 @@ class ProductsRepositoryImplTest {
         assertEquals(currentTimeMillis, productDetailsDao.savedProductDetails?.loadedAtMillis)
     }
 
-    // При отсутствии кэша → запрос идёт в сеть.
     @Test
     fun `GIVEN empty cache WHEN refresh product details THEN request network and save data`() = runTest {
         // GIVEN
@@ -130,7 +120,6 @@ class ProductsRepositoryImplTest {
         assertEquals(currentTimeMillis, productDetailsDao.savedProductDetails?.loadedAtMillis)
     }
 
-    // При ошибке сети и наличии устаревших данных → возвращаются данные из БД.
     @Test
     fun `GIVEN stale cache and network error WHEN refresh product details THEN keep cached data`() = runTest {
         // GIVEN
@@ -163,7 +152,6 @@ class ProductsRepositoryImplTest {
         assertEquals(cachedDetails, productDetailsDao.savedProductDetails)
     }
 
-    // При ошибке сети и отсутствии кэша → репозиторий возвращает корректный ответ который может быть обработан UI слоем.
     @Test
     fun `GIVEN empty cache and network error WHEN refresh product details THEN throw exception`() = runTest {
         // GIVEN
@@ -199,7 +187,6 @@ class ProductsRepositoryImplTest {
         assertNull(productDetailsDao.savedProductDetails)
     }
 
-    // После успешного ответа от сети → данные сохраняются в БД с актуальной меткой времени.
     @Test
     fun `GIVEN successful network response WHEN refresh empty product details THEN save data with current timestamp`() = runTest {
         // GIVEN
@@ -229,7 +216,6 @@ class ProductsRepositoryImplTest {
         assertEquals(currentTimeMillis, productDetailsDao.savedProductDetails?.loadedAtMillis)
     }
 
-    // После успешного ответа от сети → данные сохраняются в БД с актуальной меткой времени.
     @Test
     fun `GIVEN successful network response WHEN refresh existing product details THEN save data with current timestamp`() = runTest {
         // GIVEN
