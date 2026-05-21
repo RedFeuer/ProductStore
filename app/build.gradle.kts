@@ -96,7 +96,10 @@ dependencies {
     implementation(libs.junit)
 
     /* Coroutines-test */
+    implementation(libs.kotlinx.coroutines.android)
+
     testImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
 
     /* AndroidX Test */
     androidTestImplementation(libs.androidx.test.ext.junit)
