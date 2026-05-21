@@ -37,7 +37,6 @@ class CartProductDaoTest {
         database.close()
     }
 
-    /* Первое добавление товара → создаётся новая запись. */
     @Test
     fun givenEmptyCartWhenAddProductThenCreateNewRecord() = runBlocking {
         // GIVEN
@@ -68,7 +67,6 @@ class CartProductDaoTest {
         TestCase.assertEquals(1, cartProduct.quantity)
     }
 
-    /* Повторное добавление → увеличивается количество, запись не дублируется . */
     @Test
     fun givenProductAlreadyInCartWhenAddSameProductThenIncreaseQuantityWithoutDuplicate() =
         runBlocking {
@@ -104,7 +102,6 @@ class CartProductDaoTest {
             assertEquals(2, cartProduct.quantity)
         }
 
-    /* Добавление нескольких разных товаров → все сохраняются. */
     @Test
     fun givenEmptyCartWhenAddDifferentProductsThenSaveAllProducts() = runBlocking {
         // GIVEN
