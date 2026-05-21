@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.productsStore.data.local.database.ProductDatabase
 import junit.framework.TestCase
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -106,5 +107,41 @@ class CartProductDaoTest {
 
         assertEquals(productId, cartProduct.productId)
         assertEquals(2, cartProduct.quantity)
+    }
+
+    /* Добавление нескольких разных товаров → все сохраняются. */
+    @Test
+    fun givenEmptyCartWhenAddDifferentProductsThenSaveAllProducts() = runBlocking {
+        // GIVEN
+        val firstProductId = 1
+        val secondProductId = 2
+
+        // WHEN
+        cartProductDao.addProductToCart(
+            productId = firstProductId,
+            title = "Essence Mascara Lash Princess",
+            price = 9.99,
+            brand = "Essence",
+        )
+
+        cartProductDao.addProductToCart(
+            productId = secondProductId,
+            title = "Red Lipstick",
+            price = 12.99,
+            brand = "Chic Cosmetics",
+        )
+
+        val actual = cartProductDao.observeCartProducts().first()
+
+        // THEN
+        assertEquals(2, actual.size)
+
+        val productIds = actual.map { cartProductEntity ->
+            cartProductEntity.productId
+        }
+
+        assertEquals(2, productIds.size)
+        assertTrue(productIds.contains(firstProductId))
+        assertTrue(productIds.contains(secondProductId))
     }
 }
