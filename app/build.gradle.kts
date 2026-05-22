@@ -76,6 +76,11 @@ dependencies {
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.kotlinx.serialization.converter)
 
+    /* Room */
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+
     /* KotlinXSerialization */
     implementation(libs.kotlinx.serialization.json)
 
