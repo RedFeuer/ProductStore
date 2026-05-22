@@ -165,7 +165,7 @@ private fun ProductDetailsContent(
     }
 }
 
-/**  */
+/** шаблонная Row для размещения Название - Данные */
 @Composable
 private fun ProductInfoRow(
     title: String,

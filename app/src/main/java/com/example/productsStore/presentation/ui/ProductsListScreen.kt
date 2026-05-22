@@ -155,12 +155,7 @@ private fun ProductsListContent(
         }
     }
 
-    LaunchedEffect(
-        shouldLoadNextPage,
-        state.isPageLoading,
-        state.endReached,
-        state.pageErrorMessage
-    ) {
+    LaunchedEffect(shouldLoadNextPage) {
         if (shouldLoadNextPage) {
             onLoadNextPage()
         }
@@ -263,7 +258,8 @@ private fun EndReachedContent(
     )
 }
 
-/* TODO: разобраться */
+/** отвечает за пагинацию. начинает подгрузку следующих N элементов,
+ * когда пользователь прокручивает список до элемента N - N/4 */
 private fun shouldLoadNextPage(
     listState: LazyListState,
     productsCount: Int,
@@ -409,6 +405,8 @@ private fun ErrorContent(
     }
 }
 
+/** для пагинации - осуществляет подготовку количества элементов, которое
+ * нужно загрузить */
 @Composable
 private fun rememberCalculatedPageSize(
     viewportHeight : Dp,
