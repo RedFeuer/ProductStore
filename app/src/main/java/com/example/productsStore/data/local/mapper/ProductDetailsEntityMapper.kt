@@ -1,7 +1,7 @@
 package com.example.productsStore.data.local.mapper
 
 import com.example.productsStore.data.local.entity.ProductDetailsEntity
-import com.example.productsStore.data.remote.dto.ProductDetailsDto
+import com.example.productsStore.domain.model.CachedProductDetailsModel
 import com.example.productsStore.domain.model.ProductDetailsModel
 import javax.inject.Inject
 
@@ -17,10 +17,22 @@ class ProductDetailsEntityMapper @Inject constructor() {
             weight = detailsEntity.weight,
             availabilityStatus = detailsEntity.availabilityStatus,
             warrantyInformation = detailsEntity.warrantyInformation,
+            imageUrl = detailsEntity.imageUrl,
         )
     }
 
-    fun toEntity(detailsModel : ProductDetailsModel) : ProductDetailsEntity {
+    fun toCachedDomainModel(
+        detailsEntity : ProductDetailsEntity,
+        currentTimeMillis: Long,
+        cacheTtlMillis: Long,
+    ) : CachedProductDetailsModel {
+        return CachedProductDetailsModel(
+            product = toDomainModel(detailsEntity),
+            isStale = (currentTimeMillis - detailsEntity.loadedAtMillis >= cacheTtlMillis)
+        )
+    }
+
+    fun toEntity(detailsModel : ProductDetailsModel, loadedAtMillis: Long) : ProductDetailsEntity {
         return ProductDetailsEntity(
             id = detailsModel.id,
             title = detailsModel.title,
@@ -31,6 +43,8 @@ class ProductDetailsEntityMapper @Inject constructor() {
             weight = detailsModel.weight,
             availabilityStatus = detailsModel.availabilityStatus,
             warrantyInformation = detailsModel.warrantyInformation,
+            imageUrl = detailsModel.imageUrl,
+            loadedAtMillis = loadedAtMillis,
         )
     }
 }

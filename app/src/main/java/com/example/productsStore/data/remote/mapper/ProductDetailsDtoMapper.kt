@@ -16,6 +16,7 @@ class ProductDetailsDtoMapper @Inject constructor() {
             weight = detailsDto.weight,
             availabilityStatus = detailsDto.availabilityStatus,
             warrantyInformation = detailsDto.warrantyInformation,
+            imageUrl = detailsDto.thumbnail ?: detailsDto.images.firstOrNull()
         )
     }
 

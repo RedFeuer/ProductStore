@@ -54,6 +54,7 @@ private const val PrefetchDivider = 4
 fun ProductsListScreen(
     state: ProductListUiState,
     onProductClick: (Int) -> Unit,
+    onCartClick: () -> Unit,
     onPageSizeCalculated: (Int) -> Unit,
     onLoadNextPage:() -> Unit,
     onRetryInitialLoadingClick: () -> Unit,
@@ -70,6 +71,13 @@ fun ProductsListScreen(
                         text = "Товары",
                         fontWeight = FontWeight.Bold,
                     )
+                },
+                actions = {
+                    Button(
+                        onClick = onCartClick,
+                    ) {
+                        Text(text = "Корзина")
+                    }
                 }
             )
         }
@@ -173,7 +181,7 @@ private fun ProductsListContent(
         ) { product ->
             ProductCard(
                 product = product,
-                onClick = { onProductClick(product.id) }
+                onClick = { onProductClick(product.id) },
             )
         }
 
@@ -335,13 +343,18 @@ private fun ProductCard(
                 )
             }
 
-            /* ценник */
-            Text(
-                text = product.price.toPriceText(),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary,
-                fontWeight = FontWeight.Bold,
-            )
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                /* ценник */
+                Text(
+                    text = product.price.toPriceText(),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
         }
     }
 }

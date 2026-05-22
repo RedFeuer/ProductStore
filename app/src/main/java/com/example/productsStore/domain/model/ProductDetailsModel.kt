@@ -1,5 +1,6 @@
 package com.example.productsStore.domain.model
 
+/** детальная модель товара для экрана товара */
 data class ProductDetailsModel(
     /** общее с preview из списка товаров */
     val id: Int,
@@ -12,4 +13,6 @@ data class ProductDetailsModel(
     val weight: Int,
     val availabilityStatus: String, // можно потом отдельным классом сделать, в API два состояния всего
     val warrantyInformation: String,
+
+    val imageUrl: String?,
 )

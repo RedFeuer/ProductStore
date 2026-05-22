@@ -11,6 +11,7 @@ interface ProductDetailsDao {
     @Upsert
     suspend fun upsertProductDetails(product: ProductDetailsEntity)
 
+    /** для отображения на экране */
     @Query(
         """
             SELECT * FROM product_details
@@ -20,6 +21,7 @@ interface ProductDetailsDao {
     )
     fun observeProductDetailsById(id: Int): Flow<ProductDetailsEntity?>
 
+    /** для получения данных о времени кэширования */
     @Query(
         """
             SELECT * FROM product_details

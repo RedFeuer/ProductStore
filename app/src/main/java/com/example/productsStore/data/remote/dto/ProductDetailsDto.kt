@@ -14,4 +14,7 @@ data class ProductDetailsDto(
     val weight: Int,
     val availabilityStatus: String,
     val warrantyInformation: String,
+
+    val thumbnail: String? = null,
+    val images:List<String> = emptyList(),
 )

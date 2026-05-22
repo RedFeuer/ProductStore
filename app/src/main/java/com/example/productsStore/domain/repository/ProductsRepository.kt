@@ -1,5 +1,7 @@
 package com.example.productsStore.domain.repository
 
+import com.example.productsStore.domain.model.CachedProductDetailsModel
+import com.example.productsStore.domain.model.CartProductModel
 import com.example.productsStore.domain.model.ProductDetailsModel
 import com.example.productsStore.domain.model.ProductPreviewModel
 import com.example.productsStore.domain.model.ProductsPageModel
@@ -9,6 +11,12 @@ interface ProductsRepository {
     suspend fun observeProductPreviews(limit: Int) : Flow<List<ProductPreviewModel>>
     suspend fun refreshProductsPage(limit: Int, skip: Int) : ProductsPageModel
 
-    suspend fun observeProductDetails(id: Int) : Flow<ProductDetailsModel?>
-    suspend fun refreshProductDetails(id : Int) : ProductDetailsModel
+    suspend fun observeProductDetails(id: Int) : Flow<CachedProductDetailsModel?>
+    suspend fun refreshProductDetailsIfNeeded(id : Int)
+
+    suspend fun observeCartProducts() : Flow<List<CartProductModel>>
+
+    suspend fun addProductToCart(product: ProductDetailsModel)
+
+    suspend fun clearCart()
 }
