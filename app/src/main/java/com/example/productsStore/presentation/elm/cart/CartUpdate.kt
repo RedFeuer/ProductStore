@@ -4,7 +4,7 @@ import ru.tinkoff.kotea.core.dsl.DslUpdate
 
 class CartUpdate : DslUpdate<CartState, CartEvent, CartCommand, CartNews>() {
 
-    override fun NextBuilder.update(event: CartEvent) {
+    override fun NextBuilder<CartState, CartEvent, CartCommand, CartNews>.update(event: CartEvent) {
         when (event) {
             is CartEvent.UserIntent -> {
                 handleIntent(event.intent)
@@ -48,7 +48,7 @@ class CartUpdate : DslUpdate<CartState, CartEvent, CartCommand, CartNews>() {
         }
     }
 
-    private fun NextBuilder.handleIntent(intent: CartIntent) {
+    private fun NextBuilder<CartState, CartEvent, CartCommand, CartNews>.handleIntent(intent: CartIntent) {
         when (intent) {
             CartIntent.BackClicked -> {
                 news(CartNews.NavigateBack)
