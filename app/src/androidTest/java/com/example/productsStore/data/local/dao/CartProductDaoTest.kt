@@ -1,0 +1,165 @@
+package com.example.productsStore.data.local.dao
+
+import androidx.room.Room
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.productsStore.data.local.database.ProductDatabase
+import junit.framework.TestCase
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+
+
+@RunWith(AndroidJUnit4::class)
+class CartProductDaoTest {
+    private lateinit var database: ProductDatabase
+    private lateinit var cartProductDao: CartProductDao
+
+    @Before
+    fun setUp() {
+        database = Room.inMemoryDatabaseBuilder(
+            ApplicationProvider.getApplicationContext(),
+            ProductDatabase::class.java,
+        )
+            .allowMainThreadQueries()
+            .build()
+
+        cartProductDao = database.cartProductDao()
+    }
+
+    @After
+    fun clear() {
+        database.close()
+    }
+
+    @Test
+    fun givenEmptyCartWhenAddProductThenCreateNewRecord() = runBlocking {
+        // GIVEN
+        val productId = 1
+        val title = "Essence Mascara Lash Princess"
+        val price = 9.99
+        val brand = "Essence"
+
+        // WHEN
+        cartProductDao.addProductToCart(
+            productId = productId,
+            title = title,
+            price = price,
+            brand = brand,
+        )
+
+        val actual = cartProductDao.observeCartProducts().first()
+
+        // THEN
+        TestCase.assertEquals(1, actual.size)
+
+        val cartProduct = actual.first()
+
+        TestCase.assertEquals(productId, cartProduct.productId)
+        TestCase.assertEquals(title, cartProduct.title)
+        TestCase.assertEquals(price, cartProduct.price)
+        TestCase.assertEquals(brand, cartProduct.brand)
+        TestCase.assertEquals(1, cartProduct.quantity)
+    }
+
+    @Test
+    fun givenProductAlreadyInCartWhenAddSameProductThenIncreaseQuantityWithoutDuplicate() =
+        runBlocking {
+            // GIVEN
+            val productId = 1
+            val title = "Essence Mascara Lash Princess"
+            val price = 9.99
+            val brand = "Essence"
+
+            cartProductDao.addProductToCart(
+                productId = productId,
+                title = title,
+                price = price,
+                brand = brand,
+            )
+
+            // WHEN
+            cartProductDao.addProductToCart(
+                productId = productId,
+                title = title,
+                price = price,
+                brand = brand,
+            )
+
+            val actual = cartProductDao.observeCartProducts().first()
+
+            // THEN
+            assertEquals(1, actual.size)
+
+            val cartProduct = actual.first()
+
+            assertEquals(productId, cartProduct.productId)
+            assertEquals(2, cartProduct.quantity)
+        }
+
+    @Test
+    fun givenEmptyCartWhenAddDifferentProductsThenSaveAllProducts() = runBlocking {
+        // GIVEN
+        val firstProductId = 1
+        val secondProductId = 2
+
+        // WHEN
+        cartProductDao.addProductToCart(
+            productId = firstProductId,
+            title = "Essence Mascara Lash Princess",
+            price = 9.99,
+            brand = "Essence",
+        )
+
+        cartProductDao.addProductToCart(
+            productId = secondProductId,
+            title = "Red Lipstick",
+            price = 12.99,
+            brand = "Chic Cosmetics",
+        )
+
+        val actual = cartProductDao.observeCartProducts().first()
+
+        // THEN
+        assertEquals(2, actual.size)
+
+        val productIds = actual.map { cartProductEntity ->
+            cartProductEntity.productId
+        }
+
+        assertEquals(2, productIds.size)
+        assertTrue(productIds.contains(firstProductId))
+        assertTrue(productIds.contains(secondProductId))
+    }
+
+    @Test
+    fun givenCartWithProductsWhenClearCartThenRemoveAllProducts() = runBlocking {
+        // GIVEN
+        cartProductDao.addProductToCart(
+            productId = 1,
+            title = "Essence Mascara Lash Princess",
+            price = 9.99,
+            brand = "Essence",
+        )
+
+        cartProductDao.addProductToCart(
+            productId = 2,
+            title = "Red Lipstick",
+            price = 12.99,
+            brand = "Chic Cosmetics",
+        )
+
+        // WHEN
+        cartProductDao.clearCart()
+
+        val actual = cartProductDao.observeCartProducts().first()
+
+        // THEN
+        assertTrue(actual.isEmpty())
+    }
+}
