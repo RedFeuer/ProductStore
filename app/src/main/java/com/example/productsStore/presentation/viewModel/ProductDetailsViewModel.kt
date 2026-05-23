@@ -3,105 +3,50 @@ package com.example.productsStore.presentation.viewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.productsStore.domain.useCase.AddProductToCartUseCase
-import com.example.productsStore.domain.useCase.ObserveProductDetailsUseCase
-import com.example.productsStore.domain.useCase.RefreshProductDetailsIfNeededUseCase
-import com.example.productsStore.presentation.state.ProductDetailsUiState
+import com.example.productsStore.presentation.elm.productDetails.ProductDetailsEvent
+import com.example.productsStore.presentation.elm.productDetails.ProductDetailsIntent
+import com.example.productsStore.presentation.elm.productDetails.ProductDetailsNews
+import com.example.productsStore.presentation.elm.productDetails.ProductDetailsState
+import com.example.productsStore.presentation.elm.productDetails.ProductDetailsStoreFactory
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
+import ru.tinkoff.kotea.core.Store
 import javax.inject.Inject
 
 @HiltViewModel
 class ProductDetailsViewModel @Inject constructor(
-    savedStateHandle : SavedStateHandle,
-    private val addProductToCartUseCase: AddProductToCartUseCase,
-    private val observeProductDetailsUseCase: ObserveProductDetailsUseCase,
-    private val refreshProductDetailsIfNeededUseCase: RefreshProductDetailsIfNeededUseCase,
+    savedStateHandle: SavedStateHandle,
+    productDetailsStoreFactory: ProductDetailsStoreFactory,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<ProductDetailsUiState>(ProductDetailsUiState.Loading)
-    val uiState : StateFlow<ProductDetailsUiState> = _uiState.asStateFlow()
-
-    private val productId : Int = checkNotNull(
+    private val productId: Int = checkNotNull(
         savedStateHandle.get<Int>(PRODUCT_ID_ARGUMENT)
     ) {
         "ID продукта не найден"
     }
 
-    private var observeProductDetailsJob: Job? = null
-    private var refreshProductDetailsJob: Job? = null
-    private var addProductToCartJob: Job? = null
+    private val store: Store<ProductDetailsState, ProductDetailsEvent, ProductDetailsNews> =
+        productDetailsStoreFactory.create(
+            productId = productId,
+        )
+
+    val state: StateFlow<ProductDetailsState> = store.state
+
+    val news: Flow<ProductDetailsNews> = store.news
 
     init {
-        observeCachedProductDetails()
-        refreshProductDetails()
+        store.launchIn(
+            coroutineScope = viewModelScope + Dispatchers.Unconfined
+        )
     }
 
-    fun addProductToCart() {
-        val currentState = _uiState.value as? ProductDetailsUiState.Success ?: return
-
-        if (addProductToCartJob?.isActive == true) return
-
-        addProductToCartJob = viewModelScope.launch {
-            addProductToCartUseCase(product = currentState.product)
-        }
-    }
-
-    fun retryLoadProductDetails() {
-        refreshProductDetails()
-    }
-
-    /** первичное отображение списка товаров, даже если они устарели */
-    private fun observeCachedProductDetails() {
-        observeProductDetailsJob?.cancel()
-
-        observeProductDetailsJob = viewModelScope.launch {
-            observeProductDetailsUseCase(productId = productId)
-                .collectLatest { cachedProductDetailsModel ->
-                    if (cachedProductDetailsModel != null) {
-                        _uiState.value = ProductDetailsUiState.Success(
-                            product = cachedProductDetailsModel.product,
-                            isStale = cachedProductDetailsModel.isStale,
-                        )
-                    } else {
-                        val currentState = _uiState.value
-
-                        if (currentState !is ProductDetailsUiState.Success) {
-                            _uiState.emit(ProductDetailsUiState.Loading)
-                        }
-                    }
-                }
-        }
-    }
-
-    /** проверка актуальности списка товаров и отображение новых при необходимости */
-    private fun refreshProductDetails() {
-        if (refreshProductDetailsJob?.isActive == true) return
-
-        refreshProductDetailsJob = viewModelScope.launch {
-            try {
-                refreshProductDetailsIfNeededUseCase(productId = productId)
-            } catch (exception: CancellationException) {
-                throw exception
-            } catch (exception: Exception) {
-                val currentState = _uiState.value
-
-                if (currentState !is ProductDetailsUiState.Success) {
-                    _uiState.value = ProductDetailsUiState.Error(
-                        message = exception.message ?: ERROR_MESSAGE,
-                    )
-                }
-            }
-        }
+    fun acceptIntent(intent: ProductDetailsIntent) {
+        store.dispatch(ProductDetailsEvent.UserIntent(intent))
     }
 
     private companion object {
         const val PRODUCT_ID_ARGUMENT = "productId"
-        const val ERROR_MESSAGE = "Не удалось загрузить товар"
     }
 }
