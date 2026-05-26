@@ -142,6 +142,28 @@ class CartUpdateTest {
         )
     }
 
+    @Test
+    fun `GIVEN back clicked intent WHEN update THEN navigate back news generated`() {
+        // GIVEN
+        val initialState = CartState.Empty
+
+        val event = CartEvent.UserIntent(
+            intent = CartIntent.BackClicked,
+        )
+
+        // WHEN
+        val actual = update.update(
+            state = initialState,
+            event = event,
+        )
+
+        // THEN
+        assertEquals(initialState, actual.state)
+        assertTrue(actual.commands.isEmpty())
+        assertEquals(1, actual.news.size)
+        assertEquals(CartNews.NavigateBack, actual.news.first())
+    }
+
     private fun createCartProductModel(
         productId: Int = 1,
         title: String = "Product",
