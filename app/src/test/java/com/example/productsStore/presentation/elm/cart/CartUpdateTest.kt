@@ -3,7 +3,6 @@ package com.example.productsStore.presentation.elm.cart
 import com.example.productsStore.domain.model.CartProductModel
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
-import okhttp3.internal.threadFactory
 import org.junit.Test
 
         // GIVEN
@@ -112,6 +111,33 @@ class CartUpdateTest {
         assertEquals(1, actual.news.size)
         assertEquals(
             CartNews.ShowMessage("Корзина очищена"),
+            actual.news.first(),
+        )
+    }
+
+    @Test
+    fun `GIVEN product clicked intent WHEN update THEN open product details news is generated`() {
+        // GIVEN
+        val initialState = CartState.Success(
+            products = listOf(createCartProductModel(productId = 10))
+        )
+
+        val event = CartEvent.UserIntent(
+            intent = CartIntent.ProductClicked(productId = 10)
+        )
+
+        // WHEN
+        val actual = update.update(
+            state = initialState,
+            event = event,
+        )
+
+        // THEN
+        assertEquals(initialState, actual.state)
+        assertTrue(actual.commands.isEmpty())
+        assertEquals(1, actual.news.size)
+        assertEquals(
+            CartNews.OpenProductDetails(productId = 10),
             actual.news.first(),
         )
     }
