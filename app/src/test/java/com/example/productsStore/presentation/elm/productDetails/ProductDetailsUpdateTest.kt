@@ -1,6 +1,9 @@
 package com.example.productsStore.presentation.elm.productDetails
 
+import com.example.productsStore.domain.model.CachedProductDetailsModel
 import com.example.productsStore.domain.model.ProductDetailsModel
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import org.junit.Test
 
         // GIVEN
@@ -11,6 +14,45 @@ import org.junit.Test
 
 class ProductDetailsUpdateTest {
 
+    private val update = ProductDetailsUpdate()
+
+    @Test
+    fun `GIVEN cached products loaded WHEN update THEN state is success`() {
+        // GIVEN
+        val initialState = ProductDetailsState(
+            productId = PRODUCT_ID,
+        )
+
+        val product = createProductDetailsModel(
+            id = PRODUCT_ID,
+            title = "Product",
+        )
+
+        val event = ProductDetailsEvent.CachedProductDetailsLoaded(
+            cachedProductDetails = CachedProductDetailsModel(
+                product = product,
+                isStale = false,
+            )
+        )
+
+        // WHEN
+        val actual = update.update(
+            state = initialState,
+            event = event,
+        )
+
+        // THEN
+        val actualState = requireNotNull(actual.state) {
+            "После CachedProductDetailsLoaded ожидалось новое состояние, но state == null"
+        }
+
+        val actualContentState = actualState.contentState as ProductDetailsContentState.Success
+
+        assertEquals(product, actualContentState.product)
+        assertEquals(false, actualContentState.isStale)
+        assertTrue(actual.commands.isEmpty())
+        assertTrue(actual.news.isEmpty())
+    }
 
 
     private fun createProductDetailsModel(
