@@ -3,6 +3,7 @@ package com.example.productsStore.presentation.elm.cart
 import com.example.productsStore.domain.model.CartProductModel
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
+import okhttp3.internal.threadFactory
 import org.junit.Test
 
         // GIVEN
@@ -90,7 +91,30 @@ class CartUpdateTest {
         assertTrue(actual.news.isEmpty())
     }
 
+    @Test
+    fun `GIVEN cart cleared event WHEN update THEN show message news generated`() {
+        // GIVEN
+        val initialState = CartState.Success(
+            products = listOf(createCartProductModel())
+        )
 
+        val event = CartEvent.CartCleared
+
+        // WHEN
+        val actual = update.update(
+            state = initialState,
+            event = event,
+        )
+
+        // THEN
+        assertEquals(initialState, actual.state)
+        assertTrue(actual.commands.isEmpty())
+        assertEquals(1, actual.news.size)
+        assertEquals(
+            CartNews.ShowMessage("Корзина очищена"),
+            actual.news.first(),
+        )
+    }
 
     private fun createCartProductModel(
         productId: Int = 1,
