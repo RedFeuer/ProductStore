@@ -6,12 +6,6 @@ import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import org.junit.Test
 
-        // GIVEN
-
-        // WHEN
-
-        // THEN
-
 class ProductDetailsUpdateTest {
 
     private val update = ProductDetailsUpdate()
