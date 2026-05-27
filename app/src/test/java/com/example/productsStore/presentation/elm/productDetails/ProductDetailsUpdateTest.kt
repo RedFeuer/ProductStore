@@ -54,6 +54,40 @@ class ProductDetailsUpdateTest {
         assertTrue(actual.news.isEmpty())
     }
 
+    @Test
+    fun `GIVEN stale cached product loaded WHEN update THEN state is success with stale flag`() {
+        // GIVEN
+        val initialState = ProductDetailsState(
+            productId = PRODUCT_ID,
+        )
+
+        val product = createProductDetailsModel(
+            id = PRODUCT_ID,
+            title = "Old product",
+        )
+
+        val event = ProductDetailsEvent.CachedProductDetailsLoaded(
+            cachedProductDetails = CachedProductDetailsModel(
+                product = product,
+                isStale = true,
+            )
+        )
+
+        // WHEN
+        val actual = update.update(
+            state = initialState,
+            event = event,
+        )
+
+        // THEN
+        val actualState = requireNotNull(actual.state) {
+            "После CachedProductDetailsLoaded ожидалось новое состояние, но state == null"
+        }
+        val actualContentState = actualState.contentState as ProductDetailsContentState.Success
+
+        assertEquals(product, actualContentState.product)
+        assertEquals(true, actualContentState.isStale)
+    }
 
     private fun createProductDetailsModel(
         id: Int = 1,
