@@ -227,6 +227,37 @@ class ProductDetailsUpdateTest {
         assertTrue(actual.news.isEmpty())
     }
 
+    @Test
+    fun `GIVEN product added to cart event WHEN update THEN show message news generated`() {
+        // GIVEN
+        val initialState = ProductDetailsState(
+            productId = PRODUCT_ID,
+            contentState = ProductDetailsContentState.Success(
+                product = createProductDetailsModel(),
+                isStale = false,
+            )
+        )
+
+        val event = ProductDetailsEvent.ProductAddedToCart
+
+        // WHEN
+        val actual = update.update(
+            state = initialState,
+            event = event,
+        )
+
+        // THEN
+        assertEquals(initialState, actual.state)
+        assertTrue(actual.commands.isEmpty())
+        assertEquals(1, actual.news.size)
+        assertEquals(
+            ProductDetailsNews.ShowMessage(
+                message = "Товар добавлен в корзину",
+            ),
+            actual.news.first(),
+        )
+    }
+
     private fun createProductDetailsModel(
         id: Int = 1,
         title: String = "Product",
