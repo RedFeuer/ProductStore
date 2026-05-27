@@ -204,6 +204,35 @@ class ProductsListUpdateTest {
         assertEquals(NETWORK_ERROR_MESSAGE, actualState.pageErrorMessage)
     }
 
+    @Test
+    fun `GIVEN product clicked intent WHEN update THEN product details news is generated`() {
+        // GIVE
+        val initialState = ProductsListState(
+            products = listOf(createProductPreviewModel(id = 10))
+        )
+
+        val event = ProductsListEvent.UserIntent(
+            intent = ProductsListIntent.ProductClicked(
+                productId = 10,
+            )
+        )
+
+        // WHEN
+        val actual = update.update(
+            state = initialState,
+            event = event,
+        )
+
+        // THEN
+        assertEquals(initialState, actual.state)
+        assertTrue(actual.commands.isEmpty())
+        assertEquals(1, actual.news.size)
+        assertEquals(
+            ProductsListNews.OpenProductsDetails(productId = 10),
+            actual.news.first(),
+        )
+    }
+
     private fun createProductPreviewModel(
         id: Int = 1,
         title: String = "Product",
