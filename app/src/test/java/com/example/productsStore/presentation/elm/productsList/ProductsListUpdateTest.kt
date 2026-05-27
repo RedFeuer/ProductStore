@@ -233,6 +233,31 @@ class ProductsListUpdateTest {
         )
     }
 
+    @Test
+    fun `GIVEN cart clicked intent WHEN update THEN cart news is generated`() {
+        // GIVEN
+        val initialState = ProductsListState()
+
+        val event = ProductsListEvent.UserIntent(
+            intent = ProductsListIntent.CartClicked
+        )
+
+        // WHEN
+        val actual = update.update(
+            state = initialState,
+            event = event,
+        )
+
+        // THEN
+        assertEquals(initialState, actual.state)
+        assertTrue(actual.commands.isEmpty())
+        assertEquals(1, actual.news.size)
+        assertEquals(
+            ProductsListNews.OpenCart,
+            actual.news.first(),
+        )
+    }
+
     private fun createProductPreviewModel(
         id: Int = 1,
         title: String = "Product",
