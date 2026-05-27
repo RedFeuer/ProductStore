@@ -50,6 +50,50 @@ class ProductsListUpdateTest {
         assertTrue(actual.news.isEmpty())
     }
 
+    @Test
+    fun `GIVEN page size calculated WHEN update THEN observe cache and refresh page commands are generated`() {
+        // GIVEN
+        val initialState = ProductsListState()
+
+        val event = ProductsListEvent.UserIntent(
+            intent = ProductsListIntent.PageSizeCalculated(
+                pageSize = PAGE_SIZE,
+            )
+        )
+
+        // WHEN
+        val actual = update.update(
+            state = initialState,
+            event = event,
+        )
+
+        // THEN
+        val actualState = requireNotNull(actual.state) {
+            "После PageSizeCalculated state = null"
+        }
+
+        assertEquals(PAGE_SIZE, actualState.pageSize)
+        assertEquals(PAGE_SIZE, actualState.loadedLimit)
+        assertEquals(0, actualState.nextSkip)
+        assertEquals(2, actual.commands.size)
+
+        assertEquals(
+            ProductsListCommand.ObserveCachedProducts(
+                limit = PAGE_SIZE,
+            ),
+            actual.commands[0],
+        )
+
+        assertEquals(
+            ProductsListCommand.RefreshPage(
+                limit = PAGE_SIZE,
+                skip = 0,
+                isInitialLoading = true,
+            ),
+            actual.commands[1],
+        )
+    }
+
     private fun createProductPreviewModel(
         id: Int = 1,
         title: String = "Product",
