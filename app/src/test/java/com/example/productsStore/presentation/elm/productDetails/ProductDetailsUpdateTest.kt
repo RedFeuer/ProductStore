@@ -190,6 +190,43 @@ class ProductDetailsUpdateTest {
         assertTrue(actual.news.isEmpty())
     }
 
+    @Test
+    fun `GIVEN add to cart clicked and product loaded WHEN update THEN add product command is generated`() {
+        // GIVEN
+        val product = createProductDetailsModel(
+            id = PRODUCT_ID,
+        )
+
+        val initialState = ProductDetailsState(
+            productId = PRODUCT_ID,
+            contentState = ProductDetailsContentState.Success(
+                product = product,
+                isStale = false,
+            )
+        )
+
+        val event = ProductDetailsEvent.UserIntent(
+            intent = ProductDetailsIntent.AddToCartClicked,
+        )
+
+        // WHEN
+        val actual = update.update(
+            state = initialState,
+            event = event,
+        )
+
+        // THEN
+        assertEquals(initialState, actual.state)
+        assertEquals(1, actual.commands.size)
+        assertEquals(
+            ProductDetailsCommand.AddProductToCart(
+                product = product,
+            ),
+            actual.commands.first(),
+        )
+        assertTrue(actual.news.isEmpty())
+    }
+
     private fun createProductDetailsModel(
         id: Int = 1,
         title: String = "Product",
