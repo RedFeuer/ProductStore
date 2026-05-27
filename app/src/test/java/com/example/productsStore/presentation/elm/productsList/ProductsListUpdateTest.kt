@@ -144,6 +144,66 @@ class ProductsListUpdateTest {
         assertTrue(actual.news.isEmpty())
     }
 
+    @Test
+    fun `GIVEN page refreshing failed without cached products WHEN update THEN state contains full screen error`() {
+        // GIVEN
+        val initialState = ProductsListState(
+            products = emptyList(),
+            isInitialLoading = true,
+        )
+
+        val event = ProductsListEvent.PageRefreshingFailed(
+            message = NETWORK_ERROR_MESSAGE,
+            isInitialLoading = true,
+        )
+
+        // WHEN
+        val actual = update.update(
+            state = initialState,
+            event = event,
+        )
+
+        // THEN
+        val actualState = requireNotNull(actual.state) {
+            "После PageRefreshingFailed state = null"
+        }
+
+        assertEquals(false, actualState.isInitialLoading)
+        assertEquals(false, actualState.isPageLoading)
+        assertEquals(NETWORK_ERROR_MESSAGE, actualState.errorMessage)
+        assertEquals(null, actualState.pageErrorMessage)
+    }
+
+    @Test
+    fun `GIVEN page refreshing failed with cached products WHEN update THEN state contains page error`() {
+        // GIVEN
+        val initialState = ProductsListState(
+            products = listOf(createProductPreviewModel(id = 1)),
+            isPageLoading = true,
+        )
+
+        val event = ProductsListEvent.PageRefreshingFailed(
+            message = NETWORK_ERROR_MESSAGE,
+            isInitialLoading = false,
+        )
+
+        // WHEN
+        val actual = update.update(
+            state = initialState,
+            event = event,
+        )
+
+        // THEN
+        val actualState = requireNotNull(actual.state) {
+            "После PageRefreshingFailed state = null"
+        }
+
+        assertEquals(false, actualState.isInitialLoading)
+        assertEquals(false, actualState.isPageLoading)
+        assertEquals(null, actualState.errorMessage)
+        assertEquals(NETWORK_ERROR_MESSAGE, actualState.pageErrorMessage)
+    }
+
     private fun createProductPreviewModel(
         id: Int = 1,
         title: String = "Product",
