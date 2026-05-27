@@ -75,7 +75,7 @@ class ProductDetailsUpdateTest {
 
         // THEN
         val actualState = requireNotNull(actual.state) {
-            "После CachedProductDetailsLoaded ожидалось новое состояние, но state == null"
+            "После CachedProductDetailsLoaded state == null"
         }
         val actualContentState = actualState.contentState as ProductDetailsContentState.Success
 
@@ -103,7 +103,7 @@ class ProductDetailsUpdateTest {
 
         // THEN
         val actualState = requireNotNull(actual.state) {
-            "После ProductDetailsRefreshingFailed ожидалось другоео состояние, но state = nullЭ"
+            "После ProductDetailsRefreshingFailed state = nullЭ"
         }
         val actualContentState = actualState.contentState as ProductDetailsContentState.Error
 
@@ -169,7 +169,7 @@ class ProductDetailsUpdateTest {
 
         // THEN
         val actualState = requireNotNull(actual.state) {
-            "После ProductDetailsIntent.RetryClicked ожидалось другое состояние, но state = null"
+            "После ProductDetailsIntent.RetryClicked state = null"
         }
         val actualContentState = actualState.contentState
         assertEquals(ProductDetailsContentState.Loading, actualContentState)
