@@ -153,6 +153,43 @@ class ProductDetailsUpdateTest {
         )
     }
 
+    @Test
+    fun `GIVEN retry clicked intent WHEN update THEN state is loading and refresh command generated`() {
+        // GIVEN
+        val initialState = ProductDetailsState(
+            productId = PRODUCT_ID,
+            contentState = ProductDetailsContentState.Error(
+                message = NETWORK_ERROR_MESSAGE,
+            )
+        )
+
+        val event = ProductDetailsEvent.UserIntent(
+            intent = ProductDetailsIntent.RetryClicked,
+        )
+
+        // WHEN
+        val actual = update.update(
+            state = initialState,
+            event = event,
+        )
+
+        // THEN
+        val actualState = requireNotNull(actual.state) {
+            "После ProductDetailsIntent.RetryClicked ожидалось другое состояние, но state = null"
+        }
+        val actualContentState = actualState.contentState
+        assertEquals(ProductDetailsContentState.Loading, actualContentState)
+
+        assertEquals(1, actual.commands.size)
+        assertEquals(
+            ProductDetailsCommand.RefreshProductDetailsIfNeeded(
+                productId = PRODUCT_ID,
+            ),
+            actual.commands.first(),
+        )
+        assertTrue(actual.news.isEmpty())
+    }
+
     private fun createProductDetailsModel(
         id: Int = 1,
         title: String = "Product",
