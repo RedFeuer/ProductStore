@@ -89,6 +89,35 @@ class ProductDetailsUpdateTest {
         assertEquals(true, actualContentState.isStale)
     }
 
+    @Test
+    fun `GIVEN loading state WHEN refresh failed THEN state if error`() {
+        // GIVEN
+        val initialState = ProductDetailsState(
+            productId = PRODUCT_ID,
+            contentState = ProductDetailsContentState.Loading
+        )
+
+        val event = ProductDetailsEvent.ProductDetailsRefreshingFailed(
+            message = NETWORK_ERROR_MESSAGE,
+        )
+
+        // WHEN
+        val actual = update.update(
+            state = initialState,
+            event = event,
+        )
+
+        // THEN
+        val actualState = requireNotNull(actual.state) {
+            "После ProductDetailsRefreshingFailed ожидалось другоео состояние, но state = nullЭ"
+        }
+        val actualContentState = actualState.contentState as ProductDetailsContentState.Error
+
+        assertEquals(NETWORK_ERROR_MESSAGE, actualContentState.message)
+        assertTrue(actual.commands.isEmpty())
+        assertTrue(actual.news.isEmpty())
+    }
+
     private fun createProductDetailsModel(
         id: Int = 1,
         title: String = "Product",
