@@ -15,7 +15,7 @@ import com.example.productsStore.data.local.entity.ProductPreviewEntity
         ProductPreviewEntity::class,
         CartProductEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = false,
 )
 abstract class ProductDatabase : RoomDatabase() {
