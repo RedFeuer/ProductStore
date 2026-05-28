@@ -1,30 +1,30 @@
 package com.example.productsStore.presentation.ui
 
-import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsNotDisplayed
-import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithTag
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.productsStore.domain.model.ProductDetailsModel
 import com.example.productsStore.presentation.state.ProductDetailsUiState
 import com.example.productsStore.presentation.theme.ProductsStoreTheme
+import com.example.productsStore.presentation.ui.screen.ProductDetailsComposeScreen
+import com.kaspersky.components.composesupport.config.withComposeSupport
+import com.kaspersky.kaspresso.kaspresso.Kaspresso
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
+import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onComposeScreen
+//import com.kaspersky.kaspresso.compose.pack.branch.onComposeScreen
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-        // GIVEN
-
-        // WHEN
-
-        // THEN
-
 @RunWith(AndroidJUnit4::class)
-class ProductDetailsScreenTest : TestCase() {
+class ProductDetailsScreenTest : TestCase(
+    kaspressoBuilder = Kaspresso.Builder.withComposeSupport(),
+) {
 
     @get:Rule
-    val composeRule = createComposeRule()
+    val composeRule = createAndroidComposeRule<ComponentActivity>()
 
     /* тестер для проверки работы тестов */
     @Test
@@ -35,34 +35,35 @@ class ProductDetailsScreenTest : TestCase() {
 
     @Test
     fun givenProductWithImageUrlWhenScreenDisplayedThenImageDisplayed() = run {
-        // GIVEN
-        val state = ProductDetailsUiState.Success(
-            product = createProductDetailsModel(
-                imageUrl = "https://example.com/product.png",
-            ),
-            isStale = false,
-        )
-
-        // WHEN
-        composeRule.setContent {
-            ProductsStoreTheme {
-                ProductDetailsScreen(
-                    state = state,
-                    onAddToCartClick = {},
-                    onBackClick = {},
-                    onRetryClick = {},
-                )
+        step("Открываем экран товара с URL изображения") {
+            composeRule.setContent {
+                ProductsStoreTheme {
+                    ProductDetailsScreen(
+                        state = ProductDetailsUiState.Success(
+                            product = createProductDetailsModel(
+                                imageUrl = "https://example.com/product.png",
+                            ),
+                            isStale = false,
+                        ),
+                        onAddToCartClick = {},
+                        onBackClick = {},
+                        onRetryClick = {},
+                    )
+                }
             }
         }
 
-        // THEN
-        composeRule
-            .onNodeWithTag(ProductDetailsTestTags.PRODUCT_IMAGE)
-            .assertIsDisplayed()
+        step("Проверяем, что изображение отображается, а заглушка отсутствует") {
+            onComposeScreen<ProductDetailsComposeScreen>(composeRule) {
+                productImage {
+                    assertIsDisplayed()
+                }
 
-        composeRule
-            .onNodeWithTag(ProductDetailsTestTags.PRODUCT_IMAGE_PLACEHOLDER)
-            .assertDoesNotExist()
+                productImagePlaceholder {
+                    assertDoesNotExist()
+                }
+            }
+        }
     }
 
     private fun createProductDetailsModel(
