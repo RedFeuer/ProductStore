@@ -34,6 +34,22 @@ class ProductsRepositoryImpl @Inject constructor (
     private val productsDetailsDtoMapper: ProductDetailsDtoMapper,
     private val currentTimeProvider: CurrentTimeProvider,
 ) : ProductsRepository {
+    /** достаем товары с активным напоминанем */
+    override suspend fun getProductsWithEnabledReminders(): List<CartProductModel> {
+        return cartProductDao.getProductsWithEnabledReminders()
+            .map { entity ->
+                cartProductEntityMapper.toDomainModel(entity)
+            }
+    }
+
+    /** обновление поля установки напоминания */
+    override suspend fun setProductReminderEnabled(productId: Int, enabled: Boolean) {
+        cartProductDao.updateReminderEnabled(
+            productId = productId,
+            enabled = enabled,
+        )
+    }
+
     /** подгрузка списка из БД */
     override suspend fun observeProductPreviews(limit: Int): Flow<List<ProductPreviewModel>> {
         return productsPreviewDao.observeProducts(limit)
