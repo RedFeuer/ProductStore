@@ -43,6 +43,11 @@ android {
     }
 
     testOptions {
+        unitTests.all {
+            // it.useJUnit() // default
+            it.useJUnitPlatform()
+        }
+
         animationsDisabled = true
     }
 }
@@ -116,6 +121,9 @@ dependencies {
     /* AndroidX UI-Test */
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    androidTestImplementation(libs.kaspresso.compose.support)
+    androidTestImplementation(libs.kaspresso)
+    androidTestImplementation(libs.hamcrest)
 
 
     /* KoTEA */
