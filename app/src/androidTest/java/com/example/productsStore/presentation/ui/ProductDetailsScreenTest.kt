@@ -66,6 +66,39 @@ class ProductDetailsScreenTest : TestCase(
         }
     }
 
+    @Test
+    fun givenProductWithoutImageUrlWhenScreenDisplayedThenImageNotDisplayed() = run {
+        step("Открываем экран товара без URL изображения") {
+            composeRule.setContent {
+                ProductsStoreTheme {
+                    ProductDetailsScreen(
+                        state = ProductDetailsUiState.Success(
+                            product = createProductDetailsModel(
+                                imageUrl = null,
+                            ),
+                            isStale = false,
+                        ),
+                        onAddToCartClick = {},
+                        onBackClick = {},
+                        onRetryClick = {},
+                    )
+                }
+            }
+        }
+
+        step("Проверяем, что изображение отсутствует, а заглушка отображается") {
+            onComposeScreen<ProductDetailsComposeScreen>(composeRule) {
+                productImage {
+                    assertDoesNotExist()
+                }
+
+                productImagePlaceholder {
+                    assertIsDisplayed()
+                }
+            }
+        }
+    }
+
     private fun createProductDetailsModel(
         id: Int = 1,
         title: String = "Product",
