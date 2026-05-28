@@ -11,4 +11,5 @@ data class CartProductEntity(
     val price: Double,
     val brand: String?,
     val quantity: Int,
+    val reminderEnabled: Boolean = false,
 )
