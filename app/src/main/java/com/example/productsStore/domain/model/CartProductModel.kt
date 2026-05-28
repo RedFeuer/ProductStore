@@ -7,4 +7,5 @@ data class CartProductModel(
     val price: Double,
     val brand: String?,
     val quantity: Int,
+    val reminderEnabled: Boolean,
 )
