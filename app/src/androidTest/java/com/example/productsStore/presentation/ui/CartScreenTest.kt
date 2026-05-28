@@ -14,6 +14,7 @@ import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onCompose
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.run
 
 @RunWith(AndroidJUnit4::class)
 class CartScreenTest : TestCase(
@@ -49,6 +50,30 @@ class CartScreenTest : TestCase(
             onComposeScreen<CartComposeScreen>(composeRule) {
                 clearCartButton {
                     assertIsDisplayed()
+                }
+            }
+        }
+    }
+
+    @Test
+    fun givenEmptyCartWhenScreenDisplayedThenClearCartButtonDoesNotExist() = run {
+        step("Открываем пустую корзину") {
+            composeRule.setContent {
+                ProductsStoreTheme {
+                    CartScreen(
+                        state = CartState.Empty,
+                        onBackClick = {},
+                        onProductClick = {},
+                        onClearCartClick = {},
+                    )
+                }
+            }
+        }
+
+        step("Проверяем, что кнопка очистки корзины отсутствует") {
+            onComposeScreen<CartComposeScreen>(composeRule) {
+                clearCartButton {
+                    assertDoesNotExist()
                 }
             }
         }
