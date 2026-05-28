@@ -14,7 +14,6 @@ import io.github.kakaocup.compose.node.element.ComposeScreen.Companion.onCompose
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import kotlin.run
 
 @RunWith(AndroidJUnit4::class)
 class CartScreenTest : TestCase(
@@ -74,6 +73,48 @@ class CartScreenTest : TestCase(
             onComposeScreen<CartComposeScreen>(composeRule) {
                 clearCartButton {
                     assertDoesNotExist()
+                }
+            }
+        }
+    }
+
+    @Test
+    fun givenCartWithProductWhenScreenDisplayedThenProductQuantityDisplayed() = run {
+        val productId = 1
+        val quantity = 3
+
+        step("Открываем корзину с товаром") {
+            composeRule.setContent {
+                ProductsStoreTheme {
+                    CartScreen(
+                        state = CartState.Success(
+                            products = listOf(
+                                createCartProductModel(
+                                    productId = productId,
+                                    quantity = quantity,
+                                )
+                            )
+                        ),
+                        onBackClick = {},
+                        onProductClick = {},
+                        onClearCartClick = {},
+                    )
+                }
+            }
+        }
+
+        step("Проверяем, что количество товара отображается") {
+            onComposeScreen<CartComposeScreen>(composeRule) {
+                cartProductQuantity(productId) {
+                    assertIsDisplayed()
+                }
+            }
+        }
+
+        step("Проверяем корректное количество товара") {
+            onComposeScreen<CartComposeScreen>(composeRule) {
+                cartProductQuantity(productId) {
+                    assertTextEquals("Количество: $quantity")
                 }
             }
         }
