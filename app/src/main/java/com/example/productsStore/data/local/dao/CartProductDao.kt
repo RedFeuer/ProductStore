@@ -10,6 +10,25 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class CartProductDao {
+    /** достаем товары с активным напоминанем */
+    @Query(
+        """
+            SELECT * FROM cart_products
+            WHERE reminderEnabled = 1
+        """
+    )
+    abstract suspend fun getProductsWithEnabledReminders(): List<CartProductEntity>
+
+    /** обновление поля установки напоминания */
+    @Query(
+        """
+            UPDATE cart_products
+            SET reminderEnabled = :enabled
+            WHERE productId = :productId
+        """
+    )
+    abstract suspend fun updateReminderEnabled(productId: Int, enabled: Boolean)
+
     /** получение корзины товаров */
     @Query(
         """
