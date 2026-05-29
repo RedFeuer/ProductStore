@@ -2,11 +2,53 @@ package com.example.productsStore.presentation.elm.cart
 
 import com.example.productsStore.domain.model.CartProductModel
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNull
 import junit.framework.TestCase.assertTrue
 import org.junit.Test
 
 class CartUpdateTest {
     private val update = CartUpdate()
+
+    @Test
+    fun `GIVEN reminder checked changed intent WHEN update THEN set reminder command is generated`() {
+        // GIVEN
+        val productId = 1
+        val enabled = true
+
+        val initialState = CartState.Success(
+            products = listOf(
+                createCartProductModel(
+                    productId = productId,
+                    reminderEnabled = enabled,
+                )
+            )
+        )
+
+        val event = CartEvent.UserIntent(
+            intent = CartIntent.ReminderCheckedChanged(
+                productId = productId,
+                enabled = enabled,
+            )
+        )
+
+        // WHEN
+        val actual = update.update(
+            state = initialState,
+            event = event,
+        )
+
+        // THEN
+        assertEquals(initialState, actual.state)
+        assertEquals(1, actual.commands.size)
+        assertEquals(
+            CartCommand.SetProductReminderEnabled(
+                productId = productId,
+                enabled = enabled,
+            ),
+            actual.commands.first(),
+        )
+        assertTrue(actual.news.isEmpty())
+    }
 
     @Test
     fun `GIVEN cart products loaded WHEN update THEN state is success`() {
@@ -164,6 +206,7 @@ class CartUpdateTest {
         price: Double = 10.0,
         brand: String? = "Brand",
         quantity: Int = 1,
+        reminderEnabled: Boolean = false,
     ) : CartProductModel {
         return CartProductModel(
             productId = productId,
@@ -171,6 +214,7 @@ class CartUpdateTest {
             price = price,
             brand = brand,
             quantity = quantity,
+            reminderEnabled = reminderEnabled,
         )
     }
 }
