@@ -17,7 +17,9 @@ import androidx.core.net.toUri
 import com.example.productsStore.domain.model.CartProductModel
 import com.example.productsStore.presentation.ui.MainActivity
 import com.example.productsstrore.R
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PurchaseReminderReceiver : BroadcastReceiver() {
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
