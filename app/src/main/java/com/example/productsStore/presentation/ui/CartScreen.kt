@@ -1,5 +1,6 @@
 package com.example.productsStore.presentation.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,6 +43,7 @@ fun CartScreen(
     onBackClick: () -> Unit,
     onProductClick: (Int) -> Unit,
     onClearCartClick: () -> Unit,
+    onReminderCheckedChanged: (productId: Int, enable: Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -79,6 +82,7 @@ fun CartScreen(
                 CartContent(
                     products = state.products,
                     onProductClick = onProductClick,
+                    onReminderCheckedChanged = onReminderCheckedChanged,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
@@ -118,6 +122,7 @@ fun CartScreen(
 private fun CartContent(
     products: List<CartProductModel>,
     onProductClick: (Int) -> Unit,
+    onReminderCheckedChanged: (productId: Int, enable: Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -132,6 +137,9 @@ private fun CartContent(
             CartProductCard(
                 product = product,
                 onClick = { onProductClick(product.productId) },
+                onReminderCheckedChanged = { enabled ->
+                    onReminderCheckedChanged(product.productId, enabled)
+                }
             )
         }
     }
@@ -187,6 +195,7 @@ private fun CartEmpty(
 private fun CartProductCard(
     product: CartProductModel,
     onClick: () -> Unit,
+    onReminderCheckedChanged: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     ElevatedCard(
@@ -226,6 +235,27 @@ private fun CartProductCard(
                     ),
                     style = MaterialTheme.typography.bodyMedium,
                 )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            onReminderCheckedChanged(!product.reminderEnabled)
+                        },
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Checkbox(
+                        checked = product.reminderEnabled,
+                        onCheckedChange = onReminderCheckedChanged
+                    )
+
+                    Text(
+                        text = "Напомнить о покупке",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
 
             Text(
