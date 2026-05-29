@@ -19,7 +19,7 @@ class CartUpdateTest {
             products = listOf(
                 createCartProductModel(
                     productId = productId,
-                    reminderEnabled = enabled,
+                    reminderEnabled = false,
                 )
             )
         )
