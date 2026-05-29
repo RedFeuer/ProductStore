@@ -83,12 +83,27 @@ class CartUpdate : DslUpdate<CartState, CartEvent, CartCommand, CartNews>() {
             }
 
             is CartIntent.ReminderCheckedChanged -> {
-                commands(
-                    CartCommand.SetProductReminderEnabled(
-                        productId = intent.productId,
-                        enabled = intent.enabled,
+                val currentState = state as? CartState.Success
+                val product = currentState
+                    ?.products
+                    ?.firstOrNull() { productModel ->
+                        productModel.productId == intent.productId
+                    }
+
+                if (product != null) {
+                    commands(
+                        CartCommand.SetProductReminderEnabled(
+                            product = product,
+                            enabled = intent.enabled,
+                        )
                     )
-                )
+                } else {
+                    news(
+                        CartNews.ShowMessage(
+                            message = "Товар не найден"
+                        )
+                    )
+                }
             }
         }
     }
