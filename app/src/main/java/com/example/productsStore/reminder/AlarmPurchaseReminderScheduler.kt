@@ -7,7 +7,9 @@ import android.os.SystemClock
 import com.example.productsStore.domain.model.CartProductModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class AlarmPurchaseReminderScheduler @Inject constructor(
     @ApplicationContext private val context: Context,
 ) : PurchaseReminderScheduler {
