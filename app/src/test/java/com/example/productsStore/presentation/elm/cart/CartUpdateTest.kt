@@ -109,6 +109,42 @@ class CartUpdateTest {
     }
 
     @Test
+    fun `GIVEN cart product loaded with enabled reminder WHEN update THEN state contains enabled reminder`() {
+        // GIVEN
+        val productId = 1
+        val products = listOf(
+            createCartProductModel(
+                productId = productId,
+                reminderEnabled = true,
+            )
+        )
+
+        val initialState = CartState.Loading
+
+        val event = CartEvent.CartProductsLoaded(
+            products = products,
+        )
+
+        // WHEN
+        val actual = update.update(
+            state = initialState,
+            event = event,
+        )
+
+        // THEN
+        val actualState = requireNotNull(actual.state) {
+            "После CartProductsLoaded ожидалось новое состояние, но state = null"
+        } as? CartState.Success
+            ?: error("Ожидалось CartState.Success, но было ${actual.state}")
+
+        assertEquals(1, actualState.products.size)
+        assertEquals(true, actualState.products.first().reminderEnabled)
+
+        assertTrue(actual.commands.isEmpty())
+        assertTrue(actual.news.isEmpty())
+    }
+
+    @Test
     fun `GIVEN cart products loaded WHEN update THEN state is success`() {
         // GIVEN
         val initialState = CartState.Loading
