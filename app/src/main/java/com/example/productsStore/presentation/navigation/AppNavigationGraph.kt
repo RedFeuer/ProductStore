@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 
 /** граф навигации Jetpack Navigation */
 @Composable
@@ -37,7 +38,12 @@ fun AppNavigationGraph() {
                 navArgument("productId") {
                     type = NavType.IntType
                 }
-            )
+            ),
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "products-store://product-details/{productId}"
+                }
+            ),
         ) {
             ProductDetailsRoute(
                 onBackClick = { navController.popBackStack() }
