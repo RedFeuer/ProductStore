@@ -18,6 +18,7 @@ class CartProductsEntityMapperTest {
             price = 9.99,
             brand = "Essence",
             quantity = 3,
+            reminderEnabled = true,
         )
 
         // WHEN
@@ -29,6 +30,7 @@ class CartProductsEntityMapperTest {
         assertEquals(9.99, actual.price, 0.0)
         assertEquals("Essence", actual.brand)
         assertEquals(3, actual.quantity)
+        assertEquals(true, actual.reminderEnabled)
     }
 
     @Test
@@ -42,7 +44,7 @@ class CartProductsEntityMapperTest {
             price = 9.99,
             brand = "Essence",
             quantity = 3,
-            reminderEnabled = false,
+            reminderEnabled = true,
         )
 
         // WHEN
@@ -54,6 +56,7 @@ class CartProductsEntityMapperTest {
         assertEquals(9.99, actual.price, 0.0)
         assertEquals("Essence", actual.brand)
         assertEquals(3, actual.quantity)
+        assertEquals(true, actual.reminderEnabled)
     }
 
     @Test
@@ -67,6 +70,7 @@ class CartProductsEntityMapperTest {
             price = 15.0,
             brand = null,
             quantity = 1,
+            reminderEnabled = false,
         )
 
         // WHEN
@@ -78,5 +82,6 @@ class CartProductsEntityMapperTest {
         assertEquals(15.0, actual.price, 0.0)
         assertNull(actual.brand)
         assertEquals(1, actual.quantity)
+        assertEquals(false, actual.reminderEnabled)
     }
 }
