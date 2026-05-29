@@ -26,10 +26,21 @@
             </intent-filter>
         </activity>
 
+        <!-- BroadcastReceiver для отправки напоминаний купить продукт -->
         <receiver
             android:name="com.example.productsStore.reminder.PurchaseReminderReceiver"
             android:exported="false" >
+        </receiver>
 
+        <!-- BroadcastReceiver для отправки напоминаний купить продукт после перезагрузки устройства -->
+        <receiver
+            android:name="com.example.productsStore.reminder.BootCompletedReceiver"
+            android:enabled="true"
+            android:exported="false">
+
+            <intent-filter >
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
         </receiver>
     </application>
 
