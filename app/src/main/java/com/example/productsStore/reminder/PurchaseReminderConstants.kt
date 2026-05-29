@@ -8,6 +8,7 @@ object PurchaseReminderConstants {
     const val EXTRA_PRODUCT_TITLE = "extra_product_title"
     const val EXTRA_PRODUCT_QUANTITY = "extra_product_quantity"
 
-    const val REMINDER_INTERVAL_MILLIS = 60L * 60L * 1000L // 1 час
+//    const val REMINDER_INTERVAL_MILLIS = 60L * 60L * 1000L // 1 час
+    const val REMINDER_INTERVAL_MILLIS = 1_000L // TODO: убрать после проверки
     const val NOTIFICATION_ID_BASE = 10_000
 }
