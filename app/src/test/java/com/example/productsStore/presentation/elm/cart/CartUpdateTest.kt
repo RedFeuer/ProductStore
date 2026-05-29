@@ -77,6 +77,38 @@ class CartUpdateTest {
     }
 
     @Test
+    fun `GIVEN product reminder changing failed WHEN update THEN show message news is generated`() {
+        // GIVEN
+        val initialState = CartState.Success(
+            products = listOf(createCartProductModel())
+        )
+
+        val errorMessage = "Не удалось изменить напоминание"
+
+        val event = CartEvent.ProductReminderChangingFailed(
+            message = errorMessage,
+        )
+
+        // WHEN
+        val actual = update.update(
+            state = initialState,
+            event = event,
+        )
+
+        // THEN
+        assertEquals(initialState, actual.state)
+        assertTrue(actual.commands.isEmpty())
+
+        assertEquals(1, actual.news.size)
+        assertEquals(
+            CartNews.ShowMessage(
+                message = errorMessage,
+            ),
+            actual.news.first(),
+        )
+    }
+
+    @Test
     fun `GIVEN cart products loaded WHEN update THEN state is success`() {
         // GIVEN
         val initialState = CartState.Loading
