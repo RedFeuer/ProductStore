@@ -77,4 +77,8 @@ class NetworkStateHolder @Inject constructor(
         return hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
                 hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
     }
+
+    private companion object {
+        const val OFFLINE_INDICATOR_DELAY_MILLIS = 800L
+    }
 }
