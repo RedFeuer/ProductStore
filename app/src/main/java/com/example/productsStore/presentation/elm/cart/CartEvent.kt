@@ -20,4 +20,10 @@ sealed interface CartEvent {
     data class CartClearingFailed(
         val message: String,
     ) : CartEvent
+
+    data object ProductReminderChanged : CartEvent
+
+    data class ProductReminderChangingFailed(
+        val message: String,
+    ) : CartEvent
 }
