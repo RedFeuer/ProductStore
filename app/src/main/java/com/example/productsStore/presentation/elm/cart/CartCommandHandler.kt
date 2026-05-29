@@ -3,6 +3,7 @@ package com.example.productsStore.presentation.elm.cart
 import com.example.productsStore.domain.useCase.ClearCartUseCase
 import com.example.productsStore.domain.useCase.ObserveCartProductsUseCase
 import com.example.productsStore.domain.useCase.SetProductReminderEnabledUseCase
+import com.example.productsStore.reminder.PurchaseReminderScheduler
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -17,6 +18,7 @@ class CartCommandHandler @Inject constructor(
     private val observeCartProductsUseCase: ObserveCartProductsUseCase,
     private val clearCartUseCase: ClearCartUseCase,
     private val setProductReminderEnabledUseCase: SetProductReminderEnabledUseCase,
+    private val purchaseReminderScheduler: PurchaseReminderScheduler,
 ) : CommandsFlowHandler<CartCommand, CartEvent> {
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -45,9 +47,21 @@ class CartCommandHandler @Inject constructor(
         return flow {
             try {
                 setProductReminderEnabledUseCase(
-                    productId = command.productId,
+                    productId = command.product.productId,
                     enabled = command.enabled,
                 )
+
+                if (command.enabled) {
+                    purchaseReminderScheduler.schedule(
+                        product = command.product.copy(
+                            reminderEnabled = true,
+                        )
+                    )
+                } else {
+                    purchaseReminderScheduler.cancel(
+                        productId = command.product.productId,
+                    )
+                }
 
                 emit(CartEvent.ProductReminderChanged)
             } catch (exception: CancellationException) {
