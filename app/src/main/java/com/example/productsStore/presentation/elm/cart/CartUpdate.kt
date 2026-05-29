@@ -47,6 +47,18 @@ class CartUpdate : DslUpdate<CartState, CartEvent, CartCommand, CartNews>() {
                     )
                 )
             }
+
+            is CartEvent.ProductReminderChanged -> {
+
+            }
+
+            is CartEvent.ProductReminderChangingFailed -> {
+                news(
+                    CartNews.ShowMessage(
+                        message = event.message,
+                    )
+                )
+            }
         }
     }
 
@@ -68,6 +80,15 @@ class CartUpdate : DslUpdate<CartState, CartEvent, CartCommand, CartNews>() {
 
             CartIntent.ClearCartClicked -> {
                 commands(CartCommand.ClearCart)
+            }
+
+            is CartIntent.ReminderCheckedChanged -> {
+                commands(
+                    CartCommand.SetProductReminderEnabled(
+                        productId = intent.productId,
+                        enabled = intent.enabled,
+                    )
+                )
             }
         }
     }
