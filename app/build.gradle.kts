@@ -44,8 +44,8 @@ android {
 
     testOptions {
         unitTests.all {
-            // it.useJUnit() // default
-            it.useJUnitPlatform()
+             it.useJUnit() // для JUnit юнит-тестов
+//            it.useJUnitPlatform() // для Kaspresso UI-тестов
         }
 
         animationsDisabled = true
