@@ -51,6 +51,32 @@ class CartUpdateTest {
     }
 
     @Test
+    fun `GIVEN product reminder changed event WHEN update THEN state is not changed`() {
+        // GIVEN
+        val initialState = CartState.Success(
+            products = listOf(
+                createCartProductModel(
+                    productId = 1,
+                    reminderEnabled = true,
+                )
+            )
+        )
+
+        val event = CartEvent.ProductReminderChanged
+
+        // WHEN
+        val actual = update.update(
+            state = initialState,
+            event = event,
+        )
+
+        // THEN
+        assertEquals(initialState, actual.state)
+        assertTrue(actual.commands.isEmpty())
+        assertTrue(actual.news.isEmpty())
+    }
+
+    @Test
     fun `GIVEN cart products loaded WHEN update THEN state is success`() {
         // GIVEN
         val initialState = CartState.Loading
