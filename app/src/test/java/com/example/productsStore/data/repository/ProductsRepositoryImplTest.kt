@@ -375,6 +375,22 @@ class ProductsRepositoryImplTest {
     private class FakeCartDao : CartProductDao() {
         private val cartProductsFlow = MutableStateFlow<List<CartProductEntity>>(emptyList())
 
+        override suspend fun getProductsWithEnabledReminders(): List<CartProductEntity> {
+            return cartProductsFlow.value.filter { cartProductsEntity ->
+                cartProductsEntity.reminderEnabled
+            }
+        }
+
+        override suspend fun updateReminderEnabled(productId: Int, enabled: Boolean) {
+            cartProductsFlow.value = cartProductsFlow.value.map { cartProductEntity ->
+                if (cartProductEntity.productId == productId) {
+                    cartProductEntity.copy(reminderEnabled = enabled)
+                } else {
+                    cartProductEntity
+                }
+            }
+        }
+
         override fun observeCartProducts(): Flow<List<CartProductEntity>> {
             return cartProductsFlow
         }

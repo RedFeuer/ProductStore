@@ -42,6 +42,7 @@ class CartProductsEntityMapperTest {
             price = 9.99,
             brand = "Essence",
             quantity = 3,
+            reminderEnabled = false,
         )
 
         // WHEN
