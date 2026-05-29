@@ -10,11 +10,18 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.getValue
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.productsStore.network.NetworkStateHolder
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var networkStateHolder: NetworkStateHolder
 
     private lateinit var requestNotificationPermissionLauncher: ActivityResultLauncher<String>
 
@@ -26,8 +33,22 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            AppRoot()
+            val isOffline by networkStateHolder.isOffline.collectAsStateWithLifecycle()
+
+            AppRoot(
+                isOffline = isOffline,
+            )
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        networkStateHolder.startMonitoring()
+    }
+
+    override fun onStop() {
+        networkStateHolder.stopMonitoring()
+        super.onStop()
     }
 
     /** проверка permissions */
