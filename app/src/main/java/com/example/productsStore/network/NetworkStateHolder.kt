@@ -64,6 +64,27 @@ class NetworkStateHolder @Inject constructor(
         isMonitoringStarted = false
     }
 
+    private fun updateOfflineState(
+        isOffline: Boolean,
+    ) {
+        if (isOffline) {
+            showOfflineJob?.cancel()
+
+            showOfflineJob = scope.launch {
+                delay(OFFLINE_INDICATOR_DELAY_MILLIS)
+
+                if (!hasValidatedInternetConnection()) {
+                    _isOffline.value = true
+                }
+            }
+        } else {
+            showOfflineJob?.cancel()
+            showOfflineJob = null
+
+            _isOffline.value = false
+        }
+    }
+
     private fun hasValidatedInternetConnection(): Boolean {
         val activeNetwork = connectivityManager.activeNetwork ?: return false
 
