@@ -8,4 +8,9 @@ sealed interface CartIntent {
     ) : CartIntent
 
     data object ClearCartClicked : CartIntent
+
+    data class ReminderCheckedChanged(
+        val productId: Int,
+        val enabled: Boolean,
+    ) : CartIntent
 }
