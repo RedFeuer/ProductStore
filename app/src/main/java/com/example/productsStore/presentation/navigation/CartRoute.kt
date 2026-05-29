@@ -50,5 +50,13 @@ fun CartRoute(
         onClearCartClick = {
             viewModel.acceptIntent(CartIntent.ClearCartClicked)
         },
+        onReminderCheckedChanged = { productId, enabled ->
+            viewModel.acceptIntent(
+                CartIntent.ReminderCheckedChanged(
+                    productId = productId,
+                    enabled = enabled,
+                )
+            )
+        }
     )
 }
