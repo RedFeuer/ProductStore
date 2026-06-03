@@ -8,7 +8,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.productsStore.presentation.elm.productsList.ProductsListIntent
 import com.example.productsStore.presentation.elm.productsList.ProductsListNews
 import com.example.productsStore.presentation.elm.productsList.toUiState
-import com.example.productsStore.presentation.ui.ProductsListScreen
+import com.example.productsStore.presentation.ui.productsList.ProductsListScreen
 import com.example.productsStore.presentation.viewModel.ProductsListViewModel
 import kotlinx.coroutines.flow.collectLatest
 

@@ -7,7 +7,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.productsStore.presentation.elm.cart.CartIntent
 import com.example.productsStore.presentation.elm.cart.CartNews
-import com.example.productsStore.presentation.ui.CartScreen
+import com.example.productsStore.presentation.ui.cart.CartScreen
 import com.example.productsStore.presentation.viewModel.CartViewModel
 import kotlinx.coroutines.flow.collectLatest
 

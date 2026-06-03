@@ -1,30 +1,21 @@
-package com.example.productsStore.presentation.ui
+package com.example.productsStore.presentation.ui.productDetails
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,89 +24,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.productsStore.domain.model.ProductDetailsModel
-import com.example.productsStore.presentation.state.ProductDetailsUiState
+import com.example.productsStore.presentation.ui.ProductDetailsTestTags
 import com.example.productsstore.R
 import java.util.Locale
 
-/** обработчик состояний */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductDetailsScreen(
-    state: ProductDetailsUiState,
-    onAddToCartClick: () -> Unit,
-    onBackClick: () -> Unit,
-    onRetryClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        containerColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(R.string.product)) },
-                navigationIcon = {
-                    IconButton(
-                        onClick = onBackClick
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                }
-            )
-        },
-    ) { innerPadding ->
-        when (state) {
-            is ProductDetailsUiState.Success -> {
-                ProductDetailsContent(
-                    product = state.product,
-                    isStale = state.isStale,
-                    onAddToCartClick = onAddToCartClick,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                )
-            }
-
-            ProductDetailsUiState.Loading -> {
-                LoadingContent(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                )
-            }
-
-            ProductDetailsUiState.Empty -> {
-                EmptyContent(
-                    text = stringResource(R.string.product_card_is_empty),
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                )
-            }
-
-            is ProductDetailsUiState.Error -> {
-                ErrorContent(
-                    message = state.message,
-                    onRetryClick = onRetryClick,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun ProductDetailsContent(
+fun ProductDetailsContent(
     product: ProductDetailsModel,
     isStale: Boolean,
     onAddToCartClick: () -> Unit,
@@ -274,65 +192,6 @@ private fun StaleDataBadge(
         style = MaterialTheme.typography.labelMedium,
         fontWeight = FontWeight.Bold,
     )
-}
-
-@Composable
-private fun LoadingContent(
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator()
-    }
-}
-
-@Composable
-private fun EmptyContent(
-    text: String,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier.padding(24.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center,
-        )
-    }
-}
-
-@Composable
-private fun ErrorContent(
-    message: String,
-    onRetryClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier.padding(24.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Text(
-                text = message,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.error,
-                textAlign = TextAlign.Center,
-            )
-
-            Button(
-                onClick = onRetryClick,
-            ) {
-                Text(text = stringResource(R.string.repeat))
-            }
-        }
-    }
 }
 
 private fun Double.toPriceText() : String {

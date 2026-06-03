@@ -1,12 +1,9 @@
-package com.example.productsStore.presentation.ui
+package com.example.productsStore.presentation.ui.productsList
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,16 +11,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -34,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -44,93 +34,14 @@ import com.example.productsstore.R
 import java.util.Locale
 import kotlin.math.floor
 
-/** обработчик состояний */
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ProductsListScreen(
-    state: ProductListUiState,
-    onProductClick: (Int) -> Unit,
-    onCartClick: () -> Unit,
-    onPageSizeCalculated: (Int) -> Unit,
-    onLoadNextPage:() -> Unit,
-    onRetryInitialLoadingClick: () -> Unit,
-    onRetryNextPageClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        containerColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.products),
-                        fontWeight = FontWeight.Bold,
-                    )
-                },
-                actions = {
-                    Button(
-                        onClick = onCartClick,
-                    ) {
-                        Text(text = stringResource(R.string.cart))
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
-        BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            val pageSize = rememberCalculatedPageSize(
-                viewportHeight = maxHeight,
-            )
-
-            /* вызываем только при изменении pageSize */
-            LaunchedEffect(pageSize) {
-                onPageSizeCalculated(pageSize)
-            }
-
-            when(state) {
-                is ProductListUiState.Success -> {
-                    ProductsListContent(
-                        state = state,
-                        pageSize = pageSize,
-                        onProductClick = onProductClick,
-                        onLoadNextPage = onLoadNextPage,
-                        onRetryNextPageClick = onRetryNextPageClick,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-                ProductListUiState.Loading -> {
-                    LoadingContent(
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-
-                ProductListUiState.Empty -> {
-                    EmptyContent(
-                        text = stringResource(R.string.products_list_is_empty),
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-
-                is ProductListUiState.Error -> {
-                    ErrorContent(
-                        message = state.message,
-                        onRetryClick = onRetryInitialLoadingClick,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-            }
-        }
-    }
+object CardSize {
+    val ProductCardHeight = 120.dp
+    val ProductCardSpacing = 12.dp
 }
 
 /** список товаров */
 @Composable
-private fun ProductsListContent(
+fun ProductsListContent(
     state: ProductListUiState.Success,
     pageSize: Int,
     onProductClick: (Int) -> Unit,
@@ -204,62 +115,31 @@ private fun ProductsListContent(
     }
 }
 
+/** для пагинации - осуществляет подготовку количества элементов, которое
+ * нужно загрузить */
 @Composable
-private fun PageLoadingContent(
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        LinearProgressIndicator(
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
-}
+fun rememberCalculatedPageSize(
+    viewportHeight : Dp,
+) : Int {
+    val density = LocalDensity.current
 
-@Composable
-private fun PageErrorContent(
-    message: String,
-    onRetryClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Text(
-            text = message,
-            color = MaterialTheme.colorScheme.error,
-            textAlign = TextAlign.Center,
-        )
-
-        Button(
-            onClick = onRetryClick
-        ) {
-            Text(text = stringResource(R.string.repeat))
+    /* пересчитываем только при изменении viewportHeight или density */
+    return remember(viewportHeight, density) {
+        val viewportHeightPx = with(density) {
+            viewportHeight.toPx()
         }
-    }
-}
 
-@Composable
-private fun EndReachedContent(
-    modifier: Modifier = Modifier,
-) {
-    Text(
-        text = stringResource(R.string.all_products_are_loaded),
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 16.dp),
-        textAlign = TextAlign.Center,
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-    )
+        val oneItemHeightPx = with(density) {
+            (CardSize.ProductCardHeight + CardSize.ProductCardSpacing).toPx()
+        }
+
+        /* N = (высота экрана) / (высота одной карточки) * 2 */
+        val visibleCardsCount = floor(
+            viewportHeightPx / oneItemHeightPx
+        ).toInt().coerceAtLeast(1)
+
+        visibleCardsCount * PaginationConstants.PAGE_SIZE_MULTIPLIER
+    }
 }
 
 /** отвечает за пагинацию. начинает подгрузку следующих N элементов,
@@ -358,92 +238,6 @@ private fun ProductCard(
     }
 }
 
-@Composable
-private fun LoadingContent(
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center,
-    ) {
-        CircularProgressIndicator()
-    }
-}
-
-@Composable
-private fun EmptyContent(
-    text: String,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier.padding(24.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center,
-        )
-    }
-}
-
-@Composable
-private fun ErrorContent(
-    message: String,
-    onRetryClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center,
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Text(
-                text = message,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.error,
-                textAlign = TextAlign.Center,
-            )
-
-            Button(
-                onClick = onRetryClick
-            ) {
-                Text(text = stringResource(R.string.repeat))
-            }
-        }
-    }
-}
-
-/** для пагинации - осуществляет подготовку количества элементов, которое
- * нужно загрузить */
-@Composable
-private fun rememberCalculatedPageSize(
-    viewportHeight : Dp,
-) : Int {
-    val density = LocalDensity.current
-
-    /* пересчитываем только при изменении viewportHeight или density */
-    return remember(viewportHeight, density) {
-        val viewportHeightPx = with(density) {
-            viewportHeight.toPx()
-        }
-
-        val oneItemHeightPx = with(density) {
-            (CardSize.ProductCardHeight + CardSize.ProductCardSpacing).toPx()
-        }
-
-        /* N = (высота экрана) / (высота одной карточки) * 2 */
-        val visibleCardsCount = floor(
-            viewportHeightPx / oneItemHeightPx
-        ).toInt().coerceAtLeast(1)
-
-        visibleCardsCount * PaginationConstants.PAGE_SIZE_MULTIPLIER
-    }
-}
-
 private fun Double.toPriceText() : String {
     return String.format(Locale.US, "$%.2f", this)
 }
@@ -452,11 +246,6 @@ private object ProductsListItemKeys {
     const val PAGE_LOADING = "page_loading"
     const val PAGE_ERROR = "page_error"
     const val END_REACHED = "end_reached"
-}
-
-private object CardSize {
-    val ProductCardHeight = 120.dp
-    val ProductCardSpacing = 12.dp
 }
 
 private object PaginationConstants {
