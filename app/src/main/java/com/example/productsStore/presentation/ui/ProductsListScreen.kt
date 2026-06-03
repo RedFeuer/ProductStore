@@ -281,7 +281,7 @@ private fun shouldLoadNextPage(
         listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: return false
 
     /* N - N/4 */
-    val prefetchDistance = (pageSize / PaginationConstants.PrefetchDivider).coerceAtLeast(1)
+    val prefetchDistance = (pageSize / PaginationConstants.PREFETCH_DIVIDER).coerceAtLeast(1)
     val triggerIndex = (productsCount - prefetchDistance - 1).coerceAtLeast(0)
 
     return lastVisibleItemIndex >= triggerIndex
@@ -440,7 +440,7 @@ private fun rememberCalculatedPageSize(
             viewportHeightPx / oneItemHeightPx
         ).toInt().coerceAtLeast(1)
 
-        visibleCardsCount * PaginationConstants.PageSizeMultiplier
+        visibleCardsCount * PaginationConstants.PAGE_SIZE_MULTIPLIER
     }
 }
 
@@ -460,6 +460,6 @@ private object CardSize {
 }
 
 private object PaginationConstants {
-    const val PageSizeMultiplier = 2
-    const val PrefetchDivider = 4
+    const val PAGE_SIZE_MULTIPLIER = 2
+    const val PREFETCH_DIVIDER = 4
 }
