@@ -1,19 +1,21 @@
-package com.example.productsStore.data.repositoryImpl
+package com.example.productsStore.data.repositoryImpl.cart
 
 import com.example.productsStore.data.local.dao.CartProductDao
 import com.example.productsStore.data.local.mapper.CartProductEntityMapper
 import com.example.productsStore.domain.model.CartProductModel
 import com.example.productsStore.domain.model.ProductDetailsModel
-import com.example.productsStore.domain.repository.ProductsRepository
+import com.example.productsStore.domain.repository.cart.CartProductsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class ProductsRepositoryImpl @Inject constructor (
+@Singleton
+class CartProductsRepositoryImpl @Inject constructor(
     private val cartProductDao: CartProductDao,
     private val cartProductEntityMapper: CartProductEntityMapper,
-) : ProductsRepository {
+) : CartProductsRepository {
     /** достаем товары с активным напоминанем */
     override suspend fun getProductsWithEnabledReminders(): List<CartProductModel> {
         return cartProductDao.getProductsWithEnabledReminders()
