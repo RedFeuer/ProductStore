@@ -44,12 +44,6 @@ import com.example.productsstore.R
 import java.util.Locale
 import kotlin.math.floor
 
-private val ProductCardHeight = 120.dp
-private val ProductCardSpacing = 12.dp
-
-private const val PageSizeMultiplier = 2
-private const val PrefetchDivider = 4
-
 /** обработчик состояний */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -287,7 +281,7 @@ private fun shouldLoadNextPage(
         listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: return false
 
     /* N - N/4 */
-    val prefetchDistance = (pageSize / PrefetchDivider).coerceAtLeast(1)
+    val prefetchDistance = (pageSize / PaginationConstants.PrefetchDivider).coerceAtLeast(1)
     val triggerIndex = (productsCount - prefetchDistance - 1).coerceAtLeast(0)
 
     return lastVisibleItemIndex >= triggerIndex
@@ -304,7 +298,7 @@ private fun ProductCard(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .height(ProductCardHeight),
+            .height(CardSize.ProductCardHeight),
         colors = CardDefaults.elevatedCardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
         ),
@@ -438,7 +432,7 @@ private fun rememberCalculatedPageSize(
         }
 
         val oneItemHeightPx = with(density) {
-            (ProductCardHeight + ProductCardSpacing).toPx()
+            (CardSize.ProductCardHeight + CardSize.ProductCardSpacing).toPx()
         }
 
         /* N = (высота экрана) / (высота одной карточки) * 2 */
@@ -446,7 +440,7 @@ private fun rememberCalculatedPageSize(
             viewportHeightPx / oneItemHeightPx
         ).toInt().coerceAtLeast(1)
 
-        visibleCardsCount * PageSizeMultiplier
+        visibleCardsCount * PaginationConstants.PageSizeMultiplier
     }
 }
 
@@ -458,4 +452,14 @@ private object ProductsListItemKeys {
     const val PAGE_LOADING = "page_loading"
     const val PAGE_ERROR = "page_error"
     const val END_REACHED = "end_reached"
+}
+
+private object CardSize {
+    val ProductCardHeight = 120.dp
+    val ProductCardSpacing = 12.dp
+}
+
+private object PaginationConstants {
+    const val PageSizeMultiplier = 2
+    const val PrefetchDivider = 4
 }
