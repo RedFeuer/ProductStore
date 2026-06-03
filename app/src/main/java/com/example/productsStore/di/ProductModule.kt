@@ -1,7 +1,9 @@
 package com.example.productsStore.di
 
 import com.example.productsStore.data.repositoryImpl.ProductsRepositoryImpl
+import com.example.productsStore.data.repositoryImpl.productsList.ProductsListRepositoryImpl
 import com.example.productsStore.domain.repository.ProductsRepository
+import com.example.productsStore.domain.repository.productsList.ProductsListRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,7 +17,7 @@ abstract class ProductModule {
     @Singleton
     abstract fun bindProductsRepository(impl: ProductsRepositoryImpl) : ProductsRepository
 
-    companion object {
-
-    }
+    @Binds
+    @Singleton
+    abstract fun bindProductsListRepository(impl: ProductsListRepositoryImpl) : ProductsListRepository
 }
