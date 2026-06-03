@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -38,6 +39,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.productsStore.domain.model.ProductDetailsModel
 import com.example.productsStore.presentation.state.ProductDetailsUiState
+import com.example.productsstore.R
 import java.util.Locale
 
 /** обработчик состояний */
@@ -55,14 +57,14 @@ fun ProductDetailsScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
-                title = { Text(text = "Товар") },
+                title = { Text(text = stringResource(R.string.product)) },
                 navigationIcon = {
                     IconButton(
                         onClick = onBackClick
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад",
+                            contentDescription = stringResource(R.string.back),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -92,7 +94,7 @@ fun ProductDetailsScreen(
 
             ProductDetailsUiState.Empty -> {
                 EmptyContent(
-                    text = "Карточка товара пуста",
+                    text = stringResource(R.string.product_card_is_empty),
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
@@ -159,27 +161,30 @@ private fun ProductDetailsContent(
                 HorizontalDivider()
 
                 ProductInfoRow(
-                    title = "Цена",
+                    title = stringResource(R.string.price),
                     value = product.price.toPriceText()
                 )
 
                 ProductInfoRow(
-                    title = "Рейтинг",
+                    title = stringResource(R.string.rating),
                     value = product.rating.toString(),
                 )
 
                 ProductInfoRow(
-                    title = "Вес",
-                    value = "${product.weight} г",
+                    title = stringResource(R.string.weight),
+                    value = stringResource(
+                        R.string.weight_in_grams,
+                        product.weight,
+                    ),
                 )
 
                 ProductInfoRow(
-                    title = "Доступность",
+                    title = stringResource(R.string.availability),
                     value = product.availabilityStatus,
                 )
 
                 ProductInfoRow(
-                    title = "Гарантия",
+                    title = stringResource(R.string.warranty),
                     value = product.warrantyInformation,
                 )
 
@@ -187,7 +192,7 @@ private fun ProductDetailsContent(
                     onClick = onAddToCartClick,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "В корзину")
+                    Text(text = stringResource(R.string.add_to_cart))
                 }
             }
         }
@@ -237,7 +242,7 @@ private fun ProductImage(
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                text = "Изображение отсутствует",
+                text = stringResource(R.string.no_image),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
@@ -260,7 +265,7 @@ private fun StaleDataBadge(
     modifier: Modifier = Modifier,
 ) {
     Text(
-        text = "Данные устарели",
+        text = stringResource(R.string.data_is_stale),
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.errorContainer)
@@ -324,7 +329,7 @@ private fun ErrorContent(
             Button(
                 onClick = onRetryClick,
             ) {
-                Text(text = "Повторить")
+                Text(text = stringResource(R.string.repeat))
             }
         }
     }
