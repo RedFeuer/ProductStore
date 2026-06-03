@@ -11,9 +11,6 @@ interface ProductsRepository {
     suspend fun getProductsWithEnabledReminders(): List<CartProductModel>
     suspend fun setProductReminderEnabled(productId: Int, enabled: Boolean)
 
-    fun observeProductDetails(id: Int) : Flow<CachedProductDetailsModel?>
-    suspend fun refreshProductDetailsIfNeeded(id : Int)
-
     fun observeCartProducts() : Flow<List<CartProductModel>>
 
     suspend fun addProductToCart(product: ProductDetailsModel)
