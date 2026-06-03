@@ -135,7 +135,6 @@ class ProductsListUpdate :
     private fun DslUpdate<ProductsListState, ProductsListEvent, ProductsListCommand, ProductsListNews>.NextBuilder.handleLoadNextPage() {
         val currentPageSize = state.pageSize ?: return
 
-        if (state.products.isEmpty()) return
         if (state.isPageLoading) return
         if (state.endReached) return
         if (state.pageErrorMessage != null) return
