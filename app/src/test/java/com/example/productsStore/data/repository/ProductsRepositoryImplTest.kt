@@ -15,7 +15,6 @@ import com.example.productsStore.data.remote.dto.ProductsPageDto
 import com.example.productsStore.data.remote.mapper.ProductDetailsDtoMapper
 import com.example.productsStore.data.remote.mapper.ProductPreviewDtoMapper
 import com.example.productsStore.data.remote.mapper.ProductsPageDtoMapper
-import com.example.productsStore.data.repositoryImpl.ProductsRepositoryImpl
 import com.example.productsStore.domain.provider.time.CurrentTimeProvider
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNull
