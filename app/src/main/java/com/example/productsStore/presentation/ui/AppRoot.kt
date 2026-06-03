@@ -16,7 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.productsStore.presentation.navigation.AppNavigationGraph
 import com.example.productsStore.presentation.theme.ProductsStoreTheme
-import com.example.productsstrore.R
+import com.example.productsstore.R
 
 @Composable
 fun AppRoot(

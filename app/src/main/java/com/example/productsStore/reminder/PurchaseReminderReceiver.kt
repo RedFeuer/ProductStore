@@ -16,7 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.example.productsStore.domain.model.CartProductModel
 import com.example.productsStore.presentation.ui.MainActivity
-import com.example.productsstrore.R
+import com.example.productsstore.R
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
