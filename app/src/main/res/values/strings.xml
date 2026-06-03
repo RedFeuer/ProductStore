@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">ProductsStore</string>
     <string name="offline_mode">Оффлайн-режим: нет подключения к сети</string>
+    <string name="cart">Корзина</string>
+    <string name="back">Назад</string>
+    <string name="clear">Очистить</string>
+    <string name="cart_is_empty">"Корзина пуста</string>
+    <string name="no_brand">Без бренда</string>
+    <string name="cart_product_quantity">Количество: %1$d</string>
+    <string name="remind_about_purchase">Напомнить о покупке</string>
 </resources>
