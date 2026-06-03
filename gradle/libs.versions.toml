@@ -52,6 +52,9 @@ hamcrest = "2.2"
 # KoTEA
 kotea = "1.3.0"
 
+# ImmutableCollections
+kotlinxCollectionsImmutable = "0.4.0"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -124,6 +127,9 @@ hamcrest = { group = "org.hamcrest", name = "hamcrest", version.ref = "hamcrest"
 kotea-core = { group = "ru.tinkoff.kotea", name = "core", version.ref = "kotea" }
 kotea-android = { group = "ru.tinkoff.kotea", name = "android", version.ref = "kotea" }
 kotea-compose = { group = "ru.tinkoff.kotea", name = "compose", version.ref = "kotea" }
+
+# ImmutableCollections
+kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
