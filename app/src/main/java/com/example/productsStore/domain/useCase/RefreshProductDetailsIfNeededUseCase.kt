@@ -1,12 +1,12 @@
 package com.example.productsStore.domain.useCase
 
-import com.example.productsStore.domain.repository.ProductsRepository
+import com.example.productsStore.domain.repository.productDetails.ProductDetailsRepository
 import javax.inject.Inject
 
 class RefreshProductDetailsIfNeededUseCase @Inject constructor(
-    private val productsRepository: ProductsRepository,
+    private val productDetailsRepository: ProductDetailsRepository,
 ) {
     suspend operator fun invoke(productId: Int) {
-        productsRepository.refreshProductDetailsIfNeeded(productId)
+        productDetailsRepository.refreshProductDetailsIfNeeded(productId)
     }
 }
