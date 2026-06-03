@@ -10,13 +10,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.productsstrore"
+    namespace = "com.example.productsstore"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "com.example.productsstrore"
+        applicationId = "com.example.productsstore"
         minSdk = 28
         targetSdk = 36
         versionCode = 1
