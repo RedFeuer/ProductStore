@@ -150,7 +150,10 @@ class ProductsListUpdate :
         }
 
         val requestSkip = state.nextSkip
-        val newLoadedLimit = state.loadedLimit + currentPageSize
+        val newLoadedLimit = maxOf(
+            state.loadedLimit,
+            requestSkip + currentPageSize,
+        )
 
         state {
             copy(
@@ -181,6 +184,13 @@ class ProductsListUpdate :
         if (state.isPageLoading) return
         if (state.endReached) return
 
+        val requestSkip = state.nextSkip
+
+        val newLoadedLimit = maxOf(
+            state.loadedLimit,
+            requestSkip + currentPageSize,
+        )
+
         state {
             copy(
                 isPageLoading = true,
@@ -190,8 +200,8 @@ class ProductsListUpdate :
 
         commands(
             ProductsListCommand.RefreshPage(
-                limit = currentPageSize,
-                skip = state.nextSkip,
+                limit = newLoadedLimit,
+                skip = requestSkip,
                 isInitialLoading = false,
             )
         )
@@ -255,17 +265,33 @@ class ProductsListUpdate :
 
         val newNextSkip = maxOf(state.nextSkip, (event.productsPage.skip + loadedProducts.size))
 
+        val newLoadedLimit = maxOf(state.loadedLimit, newNextSkip)
+
         val isEndReached = loadedProducts.isEmpty() || newNextSkip >= event.productsPage.total
+
+        /* первая загрузка и ждем данные из Room */
+        val shouldWaitCachedProducts =
+            event.isInitialLoading &&
+                    state.products.isEmpty() &&
+                    loadedProducts.isNotEmpty()
+
+        /* первая загрузка и ничего не подгрузилось */
+        val isEmptyConfirmed =
+            event.isInitialLoading &&
+                    state.products.isEmpty() &&
+                    loadedProducts.isEmpty()
 
         state {
             copy(
                 totalProducts = event.productsPage.total,
                 nextSkip = newNextSkip,
+                loadedLimit = newLoadedLimit,
                 isPageLoading = false,
                 pageErrorMessage = null,
+                errorMessage = null,
                 endReached = isEndReached,
-                isEmptyConfirmed = products.isEmpty() || loadedProducts.isEmpty(),
-                isInitialLoading = products.isEmpty() || loadedProducts.isNotEmpty(),
+                isEmptyConfirmed = isEmptyConfirmed,
+                isInitialLoading = shouldWaitCachedProducts,
             )
         }
     }
