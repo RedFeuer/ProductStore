@@ -61,6 +61,12 @@ class NetworkStateHolder @Inject constructor(
         }
     }
 
+    fun refreshFromConnectivityBroadcast() {
+        updateOfflineState(
+            isOffline = !hasValidatedInternetConnection()
+        )
+    }
+
     fun startMonitoring() {
         if (isMonitoringStarted) return
 
