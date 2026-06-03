@@ -50,35 +50,6 @@ class ProductsRepositoryImpl @Inject constructor (
         )
     }
 
-    /** подгрузка списка из БД */
-    override suspend fun observeProductPreviews(limit: Int): Flow<List<ProductPreviewModel>> {
-        return productsPreviewDao.observeProducts(limit)
-            .map { entities ->
-                entities.map { productPreviewEntity ->
-                    productsPreviewEntityMapper.toDomainModel(productPreviewEntity) }
-            }
-            .distinctUntilChanged()
-    }
-
-    /** подгрузка списка из сети + сохранение в БД */
-    override suspend fun refreshProductsPage(limit: Int, skip: Int): ProductsPageModel {
-        val remotePageModel = productsPageDtoMapper.toDomainModel(
-            productsApi.getProductsPage(
-                limit = limit,
-                skip = skip,
-                select = PRODUCT_PREVIEW_FIELDS,
-            )
-        )
-
-        productsPreviewDao.upsertProducts(
-            products = remotePageModel.products.map { productPreviewModel ->
-                productsPreviewEntityMapper.toEntity(productPreviewModel)
-            }
-        )
-
-        return remotePageModel
-    }
-
     /** подгрузка товара из БД */
     override fun observeProductDetails(id: Int): Flow<CachedProductDetailsModel?> {
         return productDetailsDao.observeProductDetailsById(id)
