@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ProductsStore</string>
+    <string name="offline_mode">Оффлайн-режим: нет подключения к сети</string>
 </resources>
