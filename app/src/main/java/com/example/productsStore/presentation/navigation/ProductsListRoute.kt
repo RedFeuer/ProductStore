@@ -38,35 +38,5 @@ fun ProductsListRoute(
         onIntent = { intent ->
             viewModel.acceptIntent(intent)
         }
-//        onProductClick = { productId ->
-//            viewModel.acceptIntent(
-//                ProductsListIntent.ProductClicked(productId)
-//            )
-//        },
-//        onCartClick = {
-//            viewModel.acceptIntent(
-//                ProductsListIntent.CartClicked
-//            )
-//        },
-//        onPageSizeCalculated = { pageSize ->
-//            viewModel.acceptIntent(
-//                ProductsListIntent.PageSizeCalculated(pageSize)
-//            )
-//        },
-//        onLoadNextPage = {
-//            viewModel.acceptIntent(
-//                ProductsListIntent.LoadNextPage
-//            )
-//        },
-//        onRetryInitialLoadingClick = {
-//            viewModel.acceptIntent(
-//                ProductsListIntent.RetryInitialLoading
-//            )
-//        },
-//        onRetryNextPageClick = {
-//            viewModel.acceptIntent(
-//                ProductsListIntent.RetryNextPage
-//            )
-//        }
     )
 }
