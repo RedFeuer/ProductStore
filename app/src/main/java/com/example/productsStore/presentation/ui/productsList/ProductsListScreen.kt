@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import com.example.productsStore.presentation.elm.productsList.ProductsListIntent
 import com.example.productsStore.presentation.state.ProductListUiState
 import com.example.productsstore.R
 
@@ -27,12 +28,7 @@ import com.example.productsstore.R
 @Composable
 fun ProductsListScreen(
     state: ProductListUiState,
-    onProductClick: (Int) -> Unit,
-    onCartClick: () -> Unit,
-    onPageSizeCalculated: (Int) -> Unit,
-    onLoadNextPage:() -> Unit,
-    onRetryInitialLoadingClick: () -> Unit,
-    onRetryNextPageClick: () -> Unit,
+    onIntent: (ProductsListIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -48,7 +44,7 @@ fun ProductsListScreen(
                 },
                 actions = {
                     Button(
-                        onClick = onCartClick,
+                        onClick = { onIntent(ProductsListIntent.CartClicked) },
                     ) {
                         Text(text = stringResource(R.string.cart))
                     }
@@ -67,7 +63,7 @@ fun ProductsListScreen(
 
         LaunchedEffect(pageSize) {
             if (pageSize > 0) {
-                onPageSizeCalculated(pageSize)
+                onIntent(ProductsListIntent.PageSizeCalculated(pageSize))
             }
         }
 
@@ -84,9 +80,7 @@ fun ProductsListScreen(
                     ProductsListContent(
                         state = state,
                         pageSize = pageSize.coerceAtLeast(1),
-                        onProductClick = onProductClick,
-                        onLoadNextPage = onLoadNextPage,
-                        onRetryNextPageClick = onRetryNextPageClick,
+                        onIntent = onIntent,
                         modifier = Modifier.fillMaxSize()
                     )
                 }
@@ -106,7 +100,7 @@ fun ProductsListScreen(
                 is ProductListUiState.Error -> {
                     ErrorContent(
                         message = state.message,
-                        onRetryClick = onRetryInitialLoadingClick,
+                        onIntent = onIntent,
                         modifier = Modifier.fillMaxSize()
                     )
                 }

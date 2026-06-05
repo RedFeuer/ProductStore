@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.productsStore.domain.model.ProductPreviewModel
+import com.example.productsStore.presentation.elm.productsList.ProductsListIntent
 import com.example.productsStore.presentation.state.ProductListUiState
 import com.example.productsstore.R
 import java.util.Locale
@@ -42,9 +43,7 @@ object CardSize {
 fun ProductsListContent(
     state: ProductListUiState.Success,
     pageSize: Int,
-    onProductClick: (Int) -> Unit,
-    onLoadNextPage: () -> Unit,
-    onRetryNextPageClick: () -> Unit,
+    onIntent: (ProductsListIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val listState = rememberLazyListState()
@@ -70,7 +69,7 @@ fun ProductsListContent(
 
     LaunchedEffect(shouldLoadNextPage) {
         if (shouldLoadNextPage) {
-            onLoadNextPage()
+            onIntent(ProductsListIntent.LoadNextPage)
         }
     }
 
@@ -86,7 +85,13 @@ fun ProductsListContent(
         ) { product ->
             ProductCard(
                 product = product,
-                onClick = { onProductClick(product.id) },
+                onClick = {
+                    onIntent(
+                        ProductsListIntent.ProductClicked(
+                            productId = product.id,
+                        )
+                    )
+                },
             )
         }
 
@@ -100,7 +105,7 @@ fun ProductsListContent(
             item(key = ProductsListItemKeys.PAGE_ERROR) {
                 PageErrorContent(
                     message = state.pageErrorMessage,
-                    onRetryClick = onRetryNextPageClick,
+                    onIntent = onIntent,
                 )
             }
         }

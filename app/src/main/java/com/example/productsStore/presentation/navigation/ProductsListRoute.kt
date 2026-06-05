@@ -5,7 +5,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.productsStore.presentation.elm.productsList.ProductsListIntent
 import com.example.productsStore.presentation.elm.productsList.ProductsListNews
 import com.example.productsStore.presentation.elm.productsList.toUiState
 import com.example.productsStore.presentation.ui.productsList.ProductsListScreen
@@ -36,35 +35,38 @@ fun ProductsListRoute(
 
     ProductsListScreen(
         state = state.toUiState(),
-        onProductClick = { productId ->
-            viewModel.acceptIntent(
-                ProductsListIntent.ProductClicked(productId)
-            )
-        },
-        onCartClick = {
-            viewModel.acceptIntent(
-                ProductsListIntent.CartClicked
-            )
-        },
-        onPageSizeCalculated = { pageSize ->
-            viewModel.acceptIntent(
-                ProductsListIntent.PageSizeCalculated(pageSize)
-            )
-        },
-        onLoadNextPage = {
-            viewModel.acceptIntent(
-                ProductsListIntent.LoadNextPage
-            )
-        },
-        onRetryInitialLoadingClick = {
-            viewModel.acceptIntent(
-                ProductsListIntent.RetryInitialLoading
-            )
-        },
-        onRetryNextPageClick = {
-            viewModel.acceptIntent(
-                ProductsListIntent.RetryNextPage
-            )
+        onIntent = { intent ->
+            viewModel.acceptIntent(intent)
         }
+//        onProductClick = { productId ->
+//            viewModel.acceptIntent(
+//                ProductsListIntent.ProductClicked(productId)
+//            )
+//        },
+//        onCartClick = {
+//            viewModel.acceptIntent(
+//                ProductsListIntent.CartClicked
+//            )
+//        },
+//        onPageSizeCalculated = { pageSize ->
+//            viewModel.acceptIntent(
+//                ProductsListIntent.PageSizeCalculated(pageSize)
+//            )
+//        },
+//        onLoadNextPage = {
+//            viewModel.acceptIntent(
+//                ProductsListIntent.LoadNextPage
+//            )
+//        },
+//        onRetryInitialLoadingClick = {
+//            viewModel.acceptIntent(
+//                ProductsListIntent.RetryInitialLoading
+//            )
+//        },
+//        onRetryNextPageClick = {
+//            viewModel.acceptIntent(
+//                ProductsListIntent.RetryNextPage
+//            )
+//        }
     )
 }

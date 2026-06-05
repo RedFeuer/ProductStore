@@ -12,12 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.productsStore.presentation.elm.productsList.ProductsListIntent
 import com.example.productsstore.R
 
 @Composable
 fun ErrorContent(
     message: String,
-    onRetryClick: () -> Unit,
+    onIntent: (ProductsListIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -36,7 +37,7 @@ fun ErrorContent(
             )
 
             Button(
-                onClick = onRetryClick
+                onClick = { onIntent(ProductsListIntent.RetryInitialLoading) }
             ) {
                 Text(text = stringResource(R.string.repeat))
             }
