@@ -14,6 +14,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.example.productsStore.presentation.elm.productDetails.ProductDetailsIntent
 import com.example.productsStore.presentation.state.ProductDetailsUiState
 import com.example.productsstore.R
 
@@ -22,9 +23,7 @@ import com.example.productsstore.R
 @Composable
 fun ProductDetailsScreen(
     state: ProductDetailsUiState,
-    onAddToCartClick: () -> Unit,
-    onBackClick: () -> Unit,
-    onRetryClick: () -> Unit,
+    onIntent: (ProductDetailsIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -35,7 +34,7 @@ fun ProductDetailsScreen(
                 title = { Text(text = stringResource(R.string.product)) },
                 navigationIcon = {
                     IconButton(
-                        onClick = onBackClick
+                        onClick = { onIntent(ProductDetailsIntent.BackClicked) }
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -52,7 +51,7 @@ fun ProductDetailsScreen(
                 ProductDetailsContent(
                     product = state.product,
                     isStale = state.isStale,
-                    onAddToCartClick = onAddToCartClick,
+                    onIntent = onIntent,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
@@ -79,7 +78,7 @@ fun ProductDetailsScreen(
             is ProductDetailsUiState.Error -> {
                 ErrorContent(
                     message = state.message,
-                    onRetryClick = onRetryClick,
+                    onIntent = onIntent,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)

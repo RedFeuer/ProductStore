@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.example.productsStore.domain.model.ProductDetailsModel
+import com.example.productsStore.presentation.elm.productDetails.ProductDetailsIntent
 import com.example.productsStore.presentation.ui.ProductDetailsTestTags
 import com.example.productsstore.R
 import java.util.Locale
@@ -36,7 +37,7 @@ import java.util.Locale
 fun ProductDetailsContent(
     product: ProductDetailsModel,
     isStale: Boolean,
-    onAddToCartClick: () -> Unit,
+    onIntent: (ProductDetailsIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -107,7 +108,7 @@ fun ProductDetailsContent(
                 )
 
                 Button(
-                    onClick = onAddToCartClick,
+                    onClick = { onIntent(ProductDetailsIntent.AddToCartClicked) },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(text = stringResource(R.string.add_to_cart))

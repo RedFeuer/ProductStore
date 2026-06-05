@@ -5,7 +5,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.productsStore.presentation.elm.productDetails.ProductDetailsIntent
 import com.example.productsStore.presentation.elm.productDetails.ProductDetailsNews
 import com.example.productsStore.presentation.elm.productDetails.toUiState
 import com.example.productsStore.presentation.ui.productDetails.ProductDetailsScreen
@@ -35,14 +34,8 @@ fun ProductDetailsRoute(
 
     ProductDetailsScreen(
         state = state.toUiState(),
-        onAddToCartClick = {
-            viewModel.acceptIntent(ProductDetailsIntent.AddToCartClicked)
+        onIntent = { intent ->
+            viewModel.acceptIntent(intent)
         },
-        onBackClick = {
-            viewModel.acceptIntent(ProductDetailsIntent.BackClicked)
-        },
-        onRetryClick = {
-            viewModel.acceptIntent(ProductDetailsIntent.RetryClicked)
-        }
     )
 }
