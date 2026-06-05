@@ -35,7 +35,7 @@ class CartUpdate : DslUpdate<CartState, CartEvent, CartCommand, CartNews>() {
             CartEvent.CartCleared -> {
                 news(
                     CartNews.ShowMessage(
-                        message = "Корзина очищена"
+                        message = CartMessage.CartCleared
                     )
                 )
             }
@@ -43,7 +43,7 @@ class CartUpdate : DslUpdate<CartState, CartEvent, CartCommand, CartNews>() {
             is CartEvent.CartClearingFailed -> {
                 news(
                     CartNews.ShowMessage(
-                        message = event.message,
+                        message = CartMessage.Raw(message = event.message),
                     )
                 )
             }
@@ -55,7 +55,7 @@ class CartUpdate : DslUpdate<CartState, CartEvent, CartCommand, CartNews>() {
             is CartEvent.ProductReminderChangingFailed -> {
                 news(
                     CartNews.ShowMessage(
-                        message = event.message,
+                        message = CartMessage.Raw(message = event.message),
                     )
                 )
             }
@@ -100,7 +100,7 @@ class CartUpdate : DslUpdate<CartState, CartEvent, CartCommand, CartNews>() {
                 } else {
                     news(
                         CartNews.ShowMessage(
-                            message = "Товар не найден"
+                            message = CartMessage.ProductNotFound,
                         )
                     )
                 }
