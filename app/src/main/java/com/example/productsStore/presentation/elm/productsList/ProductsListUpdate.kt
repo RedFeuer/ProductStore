@@ -192,14 +192,21 @@ class ProductsListUpdate :
 
         state {
             copy(
+                loadedLimit = newLoadedLimit,
                 isPageLoading = true,
                 pageErrorMessage = null,
             )
         }
 
         commands(
+            ProductsListCommand.ObserveCachedProducts(
+                limit = newLoadedLimit
+            )
+        )
+
+        commands(
             ProductsListCommand.RefreshPage(
-                limit = newLoadedLimit,
+                limit = currentPageSize,
                 skip = requestSkip,
                 isInitialLoading = false,
             )
