@@ -228,18 +228,12 @@ class ProductsListUpdate :
             return
         }
 
-        val endReachedByTotal = state.totalProducts?.let { total ->
-            event.products.size >= total
-        } ?: false
-
         state {
             copy(
                 products = event.products,
                 isInitialLoading = false,
                 isEmptyConfirmed = false,
                 errorMessage = null,
-                nextSkip = maxOf(nextSkip, event.products.size),
-                endReached = endReached || endReachedByTotal,
             )
         }
     }
