@@ -29,6 +29,8 @@
     <string name="data_is_stale">Данные устарели</string>
     <string name="repeat">Повторить</string>
     <string name="product_card_is_empty">Карточка товара пуста</string>
+    <string name="product_added_to_cart">Товар добавлен в корзину</string>
+    <string name="product_not_loaded_yet">Товар еще не загружен</string>
 
     <!-- ProductList -->
     <string name="products">Товары</string>
