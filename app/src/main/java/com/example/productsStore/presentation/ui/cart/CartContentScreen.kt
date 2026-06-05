@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.productsStore.domain.model.CartProductModel
+import com.example.productsStore.presentation.elm.cart.CartIntent
 import com.example.productsStore.presentation.ui.CartTestTags
 import com.example.productsstore.R
 import java.util.Locale
@@ -29,8 +30,7 @@ import java.util.Locale
 @Composable
 fun CartContent(
     products: List<CartProductModel>,
-    onProductClick: (Int) -> Unit,
-    onReminderCheckedChanged: (productId: Int, enable: Boolean) -> Unit,
+    onIntent: (CartIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -44,10 +44,7 @@ fun CartContent(
         ) { product ->
             CartProductCard(
                 product = product,
-                onClick = { onProductClick(product.productId) },
-                onReminderCheckedChanged = { enabled ->
-                    onReminderCheckedChanged(product.productId, enabled)
-                }
+                onIntent = onIntent,
             )
         }
     }
@@ -56,12 +53,17 @@ fun CartContent(
 @Composable
 private fun CartProductCard(
     product: CartProductModel,
-    onClick: () -> Unit,
-    onReminderCheckedChanged: (Boolean) -> Unit,
+    onIntent: (CartIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     ElevatedCard(
-        onClick = onClick,
+        onClick = {
+            onIntent(
+                CartIntent.ProductClicked(
+                    productId = product.productId,
+                )
+            )
+        },
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.elevatedCardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -103,16 +105,20 @@ private fun CartProductCard(
 
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            onReminderCheckedChanged(!product.reminderEnabled)
-                        },
+                        .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Checkbox(
                         checked = product.reminderEnabled,
-                        onCheckedChange = onReminderCheckedChanged
+                        onCheckedChange = { enabled ->
+                            onIntent(
+                                CartIntent.ReminderCheckedChanged(
+                                    productId = product.productId,
+                                    enabled = enabled,
+                                )
+                            )
+                        }
                     )
 
                     Text(

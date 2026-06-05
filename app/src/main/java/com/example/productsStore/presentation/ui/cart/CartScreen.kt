@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.productsStore.presentation.elm.cart.CartIntent
 import com.example.productsStore.presentation.elm.cart.CartState
 import com.example.productsStore.presentation.ui.CartTestTags
 import com.example.productsstore.R
@@ -25,10 +26,7 @@ import com.example.productsstore.R
 @Composable
 fun CartScreen(
     state: CartState,
-    onBackClick: () -> Unit,
-    onProductClick: (Int) -> Unit,
-    onClearCartClick: () -> Unit,
-    onReminderCheckedChanged: (productId: Int, enable: Boolean) -> Unit,
+    onIntent: (CartIntent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -41,7 +39,7 @@ fun CartScreen(
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = onBackClick,
+                        onClick = { onIntent(CartIntent.BackClicked) },
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -52,7 +50,7 @@ fun CartScreen(
                 actions = {
                     if (state is CartState.Success && state.products.isNotEmpty()) {
                         Button(
-                            onClick = onClearCartClick,
+                            onClick = { onIntent(CartIntent.ClearCartClicked) },
                             modifier = Modifier.testTag(CartTestTags.CLEAR_CART_BUTTON),
                         ) {
                             Text(text = stringResource(R.string.clear))
@@ -66,8 +64,7 @@ fun CartScreen(
             is CartState.Success -> {
                 CartContent(
                     products = state.products,
-                    onProductClick = onProductClick,
-                    onReminderCheckedChanged = onReminderCheckedChanged,
+                    onIntent = onIntent,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)

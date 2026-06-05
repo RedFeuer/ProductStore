@@ -5,7 +5,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.productsStore.presentation.elm.cart.CartIntent
 import com.example.productsStore.presentation.elm.cart.CartNews
 import com.example.productsStore.presentation.ui.cart.CartScreen
 import com.example.productsStore.presentation.viewModel.CartViewModel
@@ -39,24 +38,8 @@ fun CartRoute(
 
     CartScreen(
         state = state,
-        onBackClick = {
-            viewModel.acceptIntent(CartIntent.BackClicked)
-        },
-        onProductClick = { productId ->
-            viewModel.acceptIntent(
-                CartIntent.ProductClicked(productId = productId)
-            )
-        },
-        onClearCartClick = {
-            viewModel.acceptIntent(CartIntent.ClearCartClicked)
-        },
-        onReminderCheckedChanged = { productId, enabled ->
-            viewModel.acceptIntent(
-                CartIntent.ReminderCheckedChanged(
-                    productId = productId,
-                    enabled = enabled,
-                )
-            )
+        onIntent = { intent ->
+            viewModel.acceptIntent(intent)
         }
     )
 }
