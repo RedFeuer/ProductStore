@@ -26,13 +26,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.productsStore.domain.model.ProductPreviewModel
 import com.example.productsStore.presentation.state.ProductListUiState
 import com.example.productsstore.R
 import java.util.Locale
-import kotlin.math.floor
 
 object CardSize {
     val ProductCardHeight = 120.dp
@@ -119,24 +117,24 @@ fun ProductsListContent(
  * нужно загрузить */
 @Composable
 fun rememberCalculatedPageSize(
-    viewportHeight : Dp,
+    viewportHeightPx : Int,
 ) : Int {
     val density = LocalDensity.current
 
     /* пересчитываем только при изменении viewportHeight или density */
-    return remember(viewportHeight, density) {
-        val viewportHeightPx = with(density) {
-            viewportHeight.toPx()
+    return remember(viewportHeightPx, density) {
+        if (viewportHeightPx <= 0) {
+            return@remember 0
         }
 
         val oneItemHeightPx = with(density) {
-            (CardSize.ProductCardHeight + CardSize.ProductCardSpacing).toPx()
+            (CardSize.ProductCardHeight + CardSize.ProductCardSpacing).roundToPx()
         }
 
         /* N = (высота экрана) / (высота одной карточки) * 2 */
-        val visibleCardsCount = floor(
+        val visibleCardsCount = (
             viewportHeightPx / oneItemHeightPx
-        ).toInt().coerceAtLeast(1)
+        ).coerceAtLeast(1)
 
         visibleCardsCount * PaginationConstants.PAGE_SIZE_MULTIPLIER
     }

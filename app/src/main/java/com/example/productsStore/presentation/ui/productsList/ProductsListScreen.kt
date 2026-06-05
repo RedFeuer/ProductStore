@@ -1,6 +1,6 @@
 package com.example.productsStore.presentation.ui.productsList
 
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -11,7 +11,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.example.productsStore.presentation.state.ProductListUiState
@@ -51,25 +56,34 @@ fun ProductsListScreen(
             )
         }
     ) { innerPadding ->
-        BoxWithConstraints(
+
+        var viewportHeightPx by remember {
+            mutableIntStateOf(0)
+        }
+
+        val pageSize = rememberCalculatedPageSize(
+            viewportHeightPx = viewportHeightPx,
+        )
+
+        LaunchedEffect(pageSize) {
+            if (pageSize > 0) {
+                onPageSizeCalculated(pageSize)
+            }
+        }
+
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .onSizeChanged { size ->
+                    viewportHeightPx = size.height
+                }
         ) {
-            val pageSize = rememberCalculatedPageSize(
-                viewportHeight = maxHeight,
-            )
-
-            /* вызываем только при изменении pageSize */
-            LaunchedEffect(pageSize) {
-                onPageSizeCalculated(pageSize)
-            }
-
             when(state) {
                 is ProductListUiState.Success -> {
                     ProductsListContent(
                         state = state,
-                        pageSize = pageSize,
+                        pageSize = pageSize.coerceAtLeast(1),
                         onProductClick = onProductClick,
                         onLoadNextPage = onLoadNextPage,
                         onRetryNextPageClick = onRetryNextPageClick,
