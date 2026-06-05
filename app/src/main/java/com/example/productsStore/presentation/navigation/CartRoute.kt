@@ -36,11 +36,14 @@ fun CartRoute(
                 }
 
                 is CartNews.ShowMessage -> {
-                    Toast.makeText(
-                        context,
-                        news.message.asString(context),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    val message = news.message
+                    if (message is CartMessage.Raw) { // только ошибки, чтобы не шуметь
+                        Toast.makeText(
+                            context,
+                            news.message.asString(context),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
         }
