@@ -19,7 +19,7 @@ class BootCompletedReceiver : BroadcastReceiver() {
     @Inject
     lateinit var purchaseReminderScheduler: PurchaseReminderScheduler
 
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val scope = CoroutineScope(SupervisorJob())
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action != Intent.ACTION_BOOT_COMPLETED) return

@@ -62,8 +62,6 @@ class CartCommandHandler @Inject constructor(
                         productId = command.product.productId,
                     )
                 }
-
-                emit(CartEvent.ProductReminderChanged)
             } catch (exception: CancellationException) {
                 throw exception
             } catch (exception: Exception) {
