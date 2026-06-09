@@ -48,10 +48,6 @@ class CartUpdate : DslUpdate<CartState, CartEvent, CartCommand, CartNews>() {
                 )
             }
 
-            is CartEvent.ProductReminderChanged -> {
-
-            }
-
             is CartEvent.ProductReminderChangingFailed -> {
                 news(
                     CartNews.ShowMessage(
