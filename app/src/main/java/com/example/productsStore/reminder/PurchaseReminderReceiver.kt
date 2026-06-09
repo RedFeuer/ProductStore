@@ -17,8 +17,12 @@ import androidx.core.net.toUri
 import com.example.productsStore.domain.model.CartProductModel
 import com.example.productsStore.presentation.ui.MainActivity
 import com.example.productsstrore.R
+import javax.inject.Inject
 
 class PurchaseReminderReceiver : BroadcastReceiver() {
+
+    @Inject
+    lateinit var purchaseReminderScheduler: PurchaseReminderScheduler
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     override fun onReceive(
@@ -66,7 +70,7 @@ class PurchaseReminderReceiver : BroadcastReceiver() {
             notification,
         )
 
-        AlarmPurchaseReminderScheduler(context).schedule(
+        purchaseReminderScheduler.schedule(
             product = CartProductModel(
                 productId = productId,
                 title = title,
