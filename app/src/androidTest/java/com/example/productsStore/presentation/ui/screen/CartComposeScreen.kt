@@ -14,7 +14,7 @@ class CartComposeScreen(
         hasTestTag(CartTestTags.CLEAR_CART_BUTTON)
     }
 
-    fun cartProductQuantity(productId: Int): KNode {
+    fun cartProductQuantity(productId: Int, function: () -> Unit): KNode {
         return child {
             hasTestTag(CartTestTags.CART_PRODUCT_QUANTITY_PREFIX + productId)
         }
