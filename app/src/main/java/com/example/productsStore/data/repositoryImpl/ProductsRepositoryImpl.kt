@@ -64,7 +64,7 @@ class ProductsRepositoryImpl @Inject constructor (
     }
 
     /** подгрузка товара из БД */
-    override suspend fun observeProductDetails(id: Int): Flow<CachedProductDetailsModel?> {
+    override fun observeProductDetails(id: Int): Flow<CachedProductDetailsModel?> {
         return productDetailsDao.observeProductDetailsById(id)
             .map { productDetailsEntity ->
                 if (productDetailsEntity != null) {

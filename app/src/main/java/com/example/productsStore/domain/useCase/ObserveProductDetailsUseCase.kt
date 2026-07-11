@@ -8,7 +8,7 @@ import javax.inject.Inject
 class ObserveProductDetailsUseCase @Inject constructor(
     private val productsRepository: ProductsRepository,
 ) {
-    suspend operator fun invoke(productId: Int): Flow<CachedProductDetailsModel?> {
+    operator fun invoke(productId: Int): Flow<CachedProductDetailsModel?> {
         return productsRepository.observeProductDetails(productId)
     }
 }
