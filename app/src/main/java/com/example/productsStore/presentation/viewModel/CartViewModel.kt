@@ -2,45 +2,41 @@ package com.example.productsStore.presentation.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.productsStore.domain.useCase.ClearCartUseCase
-import com.example.productsStore.domain.useCase.ObserveCartProductsUseCase
-import com.example.productsStore.presentation.state.CartUiState
+import com.example.productsStore.presentation.elm.cart.CartEvent
+import com.example.productsStore.presentation.elm.cart.CartIntent
+import com.example.productsStore.presentation.elm.cart.CartNews
+import com.example.productsStore.presentation.elm.cart.CartState
+import com.example.productsStore.presentation.elm.cart.CartStoreFactory
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
+import ru.tinkoff.kotea.core.Store
 import javax.inject.Inject
 
 @HiltViewModel
 class CartViewModel @Inject constructor(
-    private val observeCartProductsUseCase: ObserveCartProductsUseCase,
-    private val clearCartUseCase: ClearCartUseCase,
+    cartStoreFactory: CartStoreFactory,
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<CartUiState>(CartUiState.Loading)
-    val uiState: StateFlow<CartUiState> = _uiState.asStateFlow()
+    private val store: Store<CartState, CartEvent, CartNews> =
+        cartStoreFactory.create()
+
+    val state: StateFlow<CartState> = store.state
+
+    val news: Flow<CartNews> = store.news
 
     init {
-        observeCartProducts()
+        store.launchIn(
+            coroutineScope = viewModelScope + Dispatchers.Unconfined,
+        )
     }
 
-    fun clearCart() {
-        viewModelScope.launch {
-            clearCartUseCase()
-        }
-    }
-
-    private fun observeCartProducts() {
-        viewModelScope.launch {
-            observeCartProductsUseCase()
-                .collectLatest { products ->
-                    _uiState.value = if (products.isEmpty()) {
-                        CartUiState.Empty
-                    } else {
-                        CartUiState.Success(products = products)
-                    }
-                }
-        }
+    fun acceptIntent(intent: CartIntent) {
+        store.dispatch(
+            event = CartEvent.UserIntent(intent)
+        )
     }
 }

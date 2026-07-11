@@ -30,13 +30,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.productsStore.domain.model.CartProductModel
-import com.example.productsStore.presentation.state.CartUiState
+import com.example.productsStore.presentation.elm.cart.CartState
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(
-    state: CartUiState,
+    state: CartState,
     onBackClick: () -> Unit,
     onProductClick: (Int) -> Unit,
     onClearCartClick: () -> Unit,
@@ -61,7 +61,7 @@ fun CartScreen(
                     }
                 },
                 actions = {
-                    if (state is CartUiState.Success && state.products.isNotEmpty()) {
+                    if (state is CartState.Success && state.products.isNotEmpty()) {
                         Button(
                             onClick = onClearCartClick,
                         ) {
@@ -73,7 +73,7 @@ fun CartScreen(
         }
     ) { innerPadding ->
         when (state) {
-            is CartUiState.Success -> {
+            is CartState.Success -> {
                 CartContent(
                     products = state.products,
                     onProductClick = onProductClick,
@@ -83,7 +83,7 @@ fun CartScreen(
                 )
             }
 
-            CartUiState.Loading -> {
+            CartState.Loading -> {
                 CartLoading(
                     modifier = Modifier
                         .fillMaxSize()
@@ -92,8 +92,17 @@ fun CartScreen(
                 )
             }
 
-            CartUiState.Empty -> {
+            CartState.Empty -> {
                 CartEmpty(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                )
+            }
+
+            is CartState.Error -> {
+                CartError(
+                    message = state.message,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
@@ -123,6 +132,24 @@ private fun CartContent(
                 onClick = { onProductClick(product.productId) },
             )
         }
+    }
+}
+
+@Composable
+private fun CartError(
+    message: String,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier.padding(24.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.error,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 

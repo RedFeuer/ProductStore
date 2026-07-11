@@ -114,7 +114,7 @@ class ProductsRepositoryImpl @Inject constructor (
         }
     }
 
-    override suspend fun observeCartProducts(): Flow<List<CartProductModel>> {
+    override fun observeCartProducts(): Flow<List<CartProductModel>> {
         return cartProductDao.observeCartProducts()
             .map { entities ->
                 entities.map { cartProductEntity -> cartProductEntityMapper.toDomainModel(cartProductEntity) }

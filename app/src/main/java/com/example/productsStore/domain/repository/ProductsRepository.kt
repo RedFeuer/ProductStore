@@ -14,7 +14,7 @@ interface ProductsRepository {
     suspend fun observeProductDetails(id: Int) : Flow<CachedProductDetailsModel?>
     suspend fun refreshProductDetailsIfNeeded(id : Int)
 
-    suspend fun observeCartProducts() : Flow<List<CartProductModel>>
+    fun observeCartProducts() : Flow<List<CartProductModel>>
 
     suspend fun addProductToCart(product: ProductDetailsModel)
 

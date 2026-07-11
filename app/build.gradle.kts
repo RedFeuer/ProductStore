@@ -37,8 +37,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
@@ -107,4 +107,9 @@ dependencies {
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.kotlinx.coroutines.test)
     implementation(libs.androidx.junit.ktx)
+
+    /* KoTEA */
+    implementation(libs.kotea.core)
+    implementation(libs.kotea.android)
+    implementation(libs.kotea.compose)
 }
