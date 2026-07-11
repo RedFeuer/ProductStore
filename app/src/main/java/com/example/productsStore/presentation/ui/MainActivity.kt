@@ -1,7 +1,10 @@
 package com.example.productsStore.presentation.ui
 
 import android.Manifest
+import android.content.Context
+import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
@@ -10,11 +13,21 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.getValue
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.productsStore.network.ConnectivityChangeReceiver
+import com.example.productsStore.network.NetworkStateHolder
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private lateinit var connectivityChangeReceiver: ConnectivityChangeReceiver
+    private var isConnectivityReceiverRegistered: Boolean = false
+    @Inject
+    lateinit var networkStateHolder: NetworkStateHolder
 
     private lateinit var requestNotificationPermissionLauncher: ActivityResultLauncher<String>
 
@@ -24,10 +37,63 @@ class MainActivity : ComponentActivity() {
         initNotificationPermissionLauncher()
         requestNotificationPermissionIfNeeded()
 
+        connectivityChangeReceiver = ConnectivityChangeReceiver(
+            networkStateHolder = networkStateHolder,
+        )
+
         enableEdgeToEdge()
         setContent {
-            AppRoot()
+            val isOffline by networkStateHolder.isOffline.collectAsStateWithLifecycle()
+
+            AppRoot(
+                isOffline = isOffline,
+            )
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        networkStateHolder.startMonitoring()
+        registerConnectivityReceiver()
+    }
+
+    override fun onStop() {
+        unregisterConnectivityReceiver()
+        networkStateHolder.stopMonitoring()
+
+        super.onStop()
+    }
+
+    /** динамическая регистрация Broadcast Receiver для отслеживания состояния сети */
+    private fun registerConnectivityReceiver() {
+        if (isConnectivityReceiverRegistered) return
+
+        val intentFilter = IntentFilter(
+            ConnectivityManager.CONNECTIVITY_ACTION,
+        )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(
+                connectivityChangeReceiver,
+                intentFilter,
+                Context.RECEIVER_NOT_EXPORTED,
+            )
+        } else {
+            registerReceiver(
+                connectivityChangeReceiver,
+                intentFilter,
+            )
+        }
+
+        isConnectivityReceiverRegistered = true
+    }
+
+    private fun unregisterConnectivityReceiver() {
+        if (!isConnectivityReceiverRegistered) return
+
+        unregisterReceiver(connectivityChangeReceiver)
+        isConnectivityReceiverRegistered = false
     }
 
     /** проверка permissions */
