@@ -21,6 +21,7 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildFeatures {
@@ -39,6 +40,15 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    testOptions {
+        unitTests.all {
+            // it.useJUnit() // default
+            it.useJUnitPlatform()
+        }
+
+        animationsDisabled = true
     }
 }
 
@@ -107,6 +117,14 @@ dependencies {
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.kotlinx.coroutines.test)
     implementation(libs.androidx.junit.ktx)
+
+    /* AndroidX UI-Test */
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    androidTestImplementation(libs.kaspresso.compose.support)
+    androidTestImplementation(libs.kaspresso)
+    androidTestImplementation(libs.hamcrest)
+
 
     /* KoTEA */
     implementation(libs.kotea.core)
