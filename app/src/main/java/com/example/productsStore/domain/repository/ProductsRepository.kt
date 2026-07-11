@@ -8,6 +8,8 @@ import com.example.productsStore.domain.model.ProductsPageModel
 import kotlinx.coroutines.flow.Flow
 
 interface ProductsRepository {
+    suspend fun getProductsWithEnabledReminders(): List<CartProductModel>
+    suspend fun setProductReminderEnabled(productId: Int, enabled: Boolean)
     suspend fun observeProductPreviews(limit: Int) : Flow<List<ProductPreviewModel>>
     suspend fun refreshProductsPage(limit: Int, skip: Int) : ProductsPageModel
 

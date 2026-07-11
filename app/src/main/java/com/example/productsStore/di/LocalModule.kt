@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.example.productsStore.data.local.dao.CartProductDao
 import com.example.productsStore.data.local.dao.ProductDetailsDao
 import com.example.productsStore.data.local.dao.ProductPreviewDao
+import com.example.productsStore.data.local.database.DatabaseMigrations
 import com.example.productsStore.data.local.database.ProductDatabase
 import dagger.Module
 import dagger.Provides
@@ -28,6 +29,7 @@ object LocalModule {
         )
             .addMigrations(
                 /* миграции */
+                DatabaseMigrations.MIGRATION_1_2,
             )
             .build()
     }

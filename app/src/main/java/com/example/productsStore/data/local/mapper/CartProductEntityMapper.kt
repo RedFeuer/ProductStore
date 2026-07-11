@@ -12,6 +12,7 @@ class CartProductEntityMapper @Inject constructor() {
             price = cartProductEntity.price,
             brand = cartProductEntity.brand,
             quantity = cartProductEntity.quantity,
+            reminderEnabled = cartProductEntity.reminderEnabled,
         )
     }
 
@@ -22,6 +23,7 @@ class CartProductEntityMapper @Inject constructor() {
             price = cartProductModel.price,
             brand = cartProductModel.brand,
             quantity = cartProductModel.quantity,
+            reminderEnabled = cartProductModel.reminderEnabled,
         )
     }
 }
