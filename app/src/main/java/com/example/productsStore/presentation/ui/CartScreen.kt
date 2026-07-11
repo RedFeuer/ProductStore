@@ -29,11 +29,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.productsStore.domain.model.CartProductModel
 import com.example.productsStore.presentation.elm.cart.CartState
+import com.example.productsstore.R
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,7 +54,7 @@ fun CartScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Корзина")
+                    Text(text = stringResource(R.string.cart))
                 },
                 navigationIcon = {
                     IconButton(
@@ -60,7 +62,7 @@ fun CartScreen(
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад",
+                            contentDescription = stringResource(R.string.back),
                         )
                     }
                 },
@@ -70,7 +72,7 @@ fun CartScreen(
                             onClick = onClearCartClick,
                             modifier = Modifier.testTag(CartTestTags.CLEAR_CART_BUTTON),
                         ) {
-                            Text(text = "Очистить")
+                            Text(text = stringResource(R.string.clear))
                         }
                     }
                 }
@@ -184,7 +186,7 @@ private fun CartEmpty(
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = "Корзина пуста",
+            text = stringResource(R.string.cart_is_empty),
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center,
         )
@@ -223,13 +225,16 @@ private fun CartProductCard(
                 )
 
                 Text(
-                    text = product.brand ?: "Без бренда",
+                    text = product.brand ?: stringResource(R.string.no_brand),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
 
                 Text(
-                    text = "Количество: ${product.quantity}",
+                    text = stringResource(
+                        R.string.cart_product_quantity,
+                        product.quantity,
+                    ),
                     modifier = Modifier.testTag(
                         CartTestTags.CART_PRODUCT_QUANTITY_PREFIX + product.productId
                     ),
@@ -251,7 +256,7 @@ private fun CartProductCard(
                     )
 
                     Text(
-                        text = "Напомнить о покупке",
+                        text = stringResource(R.string.remind_about_purchase),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

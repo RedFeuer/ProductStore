@@ -1,3 +1,36 @@
 <resources>
     <string name="app_name">ProductsStore</string>
+    <string name="offline_mode">Оффлайн-режим: нет подключения к сети</string>
+    
+    <!-- действия  -->
+    <string name="back">Назад</string>
+    <string name="clear">Очистить</string>
+
+
+    <!-- ProductCart -->
+    <string name="cart_is_empty">"Корзина пуста</string>
+    <string name="product">Товар</string>
+    <string name="no_brand">Без бренда</string>
+    <string name="cart_product_quantity">Количество: %1$d</string>
+    <string name="remind_about_purchase">Напомнить о покупке</string>
+    <string name="cart">Корзина</string>
+
+    <!-- ProductDetails -->
+    <string name="price">Цена</string>
+    <string name="rating">Рейтинг</string>
+    <string name="weight">Вес</string>
+    <string name="weight_in_grams">%1$d г</string>
+    <string name="availability">Доступность</string>
+    <string name="warranty">Гарантия</string>
+    <string name="add_to_cart">В корзину</string>
+    <string name="no_image">Изображение отсутствует</string>
+    <string name="data_is_stale">Данные устарели</string>
+    <string name="repeat">Повторить</string>
+    <string name="product_card_is_empty">Карточка товара пуста</string>
+
+    <!-- ProductList -->
+    <string name="products">Товары</string>
+    <string name="products_list_is_empty">Список товаров пуст</string>
+    <string name="all_products_are_loaded">Все товары загружены</string>
+    <string name="product_id">#%1$d</string>
 </resources>

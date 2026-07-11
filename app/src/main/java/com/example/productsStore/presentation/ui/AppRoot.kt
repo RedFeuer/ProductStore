@@ -11,10 +11,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.productsStore.presentation.navigation.AppNavigationGraph
 import com.example.productsStore.presentation.theme.ProductsStoreTheme
+import com.example.productsstore.R
 
 @Composable
 fun AppRoot(
@@ -40,7 +42,7 @@ private fun OfflineIndicator(
     modifier: Modifier = Modifier,
 ) {
     Text(
-        text = "Оффлайн-режим: нет подключения к сети",
+        text = stringResource(R.string.offline_mode),
         modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.errorContainer)

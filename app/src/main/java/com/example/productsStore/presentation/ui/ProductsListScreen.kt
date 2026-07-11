@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -39,14 +40,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.productsStore.domain.model.ProductPreviewModel
 import com.example.productsStore.presentation.state.ProductListUiState
+import com.example.productsstore.R
 import java.util.Locale
 import kotlin.math.floor
-
-private val ProductCardHeight = 120.dp
-private val ProductCardSpacing = 12.dp
-
-private const val PageSizeMultiplier = 2
-private const val PrefetchDivider = 4
 
 /** обработчик состояний */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,7 +64,7 @@ fun ProductsListScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Товары",
+                        text = stringResource(R.string.products),
                         fontWeight = FontWeight.Bold,
                     )
                 },
@@ -76,7 +72,7 @@ fun ProductsListScreen(
                     Button(
                         onClick = onCartClick,
                     ) {
-                        Text(text = "Корзина")
+                        Text(text = stringResource(R.string.cart))
                     }
                 }
             )
@@ -115,7 +111,7 @@ fun ProductsListScreen(
 
                 ProductListUiState.Empty -> {
                     EmptyContent(
-                        text = "Список товаров пуст",
+                        text = stringResource(R.string.products_list_is_empty),
                         modifier = Modifier.fillMaxSize()
                     )
                 }
@@ -186,13 +182,13 @@ private fun ProductsListContent(
         }
 
         if (state.isPageLoading) {
-            item(key = "page_loading") {
+            item(key = ProductsListItemKeys.PAGE_LOADING) {
                 PageLoadingContent()
             }
         }
 
         if (state.pageErrorMessage != null) {
-            item(key = "page_error") {
+            item(key = ProductsListItemKeys.PAGE_ERROR) {
                 PageErrorContent(
                     message = state.pageErrorMessage,
                     onRetryClick = onRetryNextPageClick,
@@ -201,7 +197,7 @@ private fun ProductsListContent(
         }
 
         if (state.endReached) {
-            item(key = "end_reached") {
+            item(key = ProductsListItemKeys.END_REACHED) {
                 EndReachedContent()
             }
         }
@@ -246,7 +242,7 @@ private fun PageErrorContent(
         Button(
             onClick = onRetryClick
         ) {
-            Text(text = "Повторить")
+            Text(text = stringResource(R.string.repeat))
         }
     }
 }
@@ -256,7 +252,7 @@ private fun EndReachedContent(
     modifier: Modifier = Modifier,
 ) {
     Text(
-        text = "Все товары загружены",
+        text = stringResource(R.string.all_products_are_loaded),
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 16.dp),
@@ -285,7 +281,7 @@ private fun shouldLoadNextPage(
         listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: return false
 
     /* N - N/4 */
-    val prefetchDistance = (pageSize / PrefetchDivider).coerceAtLeast(1)
+    val prefetchDistance = (pageSize / PaginationConstants.PREFETCH_DIVIDER).coerceAtLeast(1)
     val triggerIndex = (productsCount - prefetchDistance - 1).coerceAtLeast(0)
 
     return lastVisibleItemIndex >= triggerIndex
@@ -302,7 +298,7 @@ private fun ProductCard(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .height(ProductCardHeight),
+            .height(CardSize.ProductCardHeight),
         colors = CardDefaults.elevatedCardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
         ),
@@ -320,7 +316,10 @@ private fun ProductCard(
             ) {
                 /* идентификатор */
                 Text(
-                    text = "#${product.id}",
+                    text = stringResource(
+                        R.string.product_id,
+                        product.id,
+                    ),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
@@ -333,9 +332,9 @@ private fun ProductCard(
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
-                /* бредн */
+                /* бренд */
                 Text(
-                    text = product.brand ?: "Без бренда",
+                    text = product.brand ?: stringResource(R.string.no_brand),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
@@ -412,7 +411,7 @@ private fun ErrorContent(
             Button(
                 onClick = onRetryClick
             ) {
-                Text(text = "Повторить")
+                Text(text = stringResource(R.string.repeat))
             }
         }
     }
@@ -433,7 +432,7 @@ private fun rememberCalculatedPageSize(
         }
 
         val oneItemHeightPx = with(density) {
-            (ProductCardHeight + ProductCardSpacing).toPx()
+            (CardSize.ProductCardHeight + CardSize.ProductCardSpacing).toPx()
         }
 
         /* N = (высота экрана) / (высота одной карточки) * 2 */
@@ -441,10 +440,26 @@ private fun rememberCalculatedPageSize(
             viewportHeightPx / oneItemHeightPx
         ).toInt().coerceAtLeast(1)
 
-        visibleCardsCount * PageSizeMultiplier
+        visibleCardsCount * PaginationConstants.PAGE_SIZE_MULTIPLIER
     }
 }
 
 private fun Double.toPriceText() : String {
     return String.format(Locale.US, "$%.2f", this)
+}
+
+private object ProductsListItemKeys {
+    const val PAGE_LOADING = "page_loading"
+    const val PAGE_ERROR = "page_error"
+    const val END_REACHED = "end_reached"
+}
+
+private object CardSize {
+    val ProductCardHeight = 120.dp
+    val ProductCardSpacing = 12.dp
+}
+
+private object PaginationConstants {
+    const val PAGE_SIZE_MULTIPLIER = 2
+    const val PREFETCH_DIVIDER = 4
 }

@@ -109,9 +109,9 @@ class MainActivity : ComponentActivity() {
         isGranted: Boolean,
     ) {
         val message = if (isGranted) {
-            "Уведомления разрешены"
+            NOTIFICATIONS_GRANTED
         } else {
-            "Без разрешения уведомления о покупках не будут приходить"
+            NOTIFICATIONS_NOT_GRANTED
         }
 
         val duration = if (isGranted) {
@@ -141,5 +141,10 @@ class MainActivity : ComponentActivity() {
                 Manifest.permission.POST_NOTIFICATIONS,
             )
         }
+    }
+
+    private companion object {
+        const val NOTIFICATIONS_GRANTED = "Уведомления разрешены"
+        const val NOTIFICATIONS_NOT_GRANTED = "Без разрешения уведомления о покупках не будут приходить"
     }
 }
