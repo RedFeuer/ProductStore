@@ -2,6 +2,8 @@ package com.example.productsStore.presentation.elm.cart
 
 import com.example.productsStore.domain.useCase.ClearCartUseCase
 import com.example.productsStore.domain.useCase.ObserveCartProductsUseCase
+import com.example.productsStore.domain.useCase.SetProductReminderEnabledUseCase
+import com.example.productsStore.reminder.PurchaseReminderScheduler
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -15,6 +17,8 @@ import javax.inject.Inject
 class CartCommandHandler @Inject constructor(
     private val observeCartProductsUseCase: ObserveCartProductsUseCase,
     private val clearCartUseCase: ClearCartUseCase,
+    private val setProductReminderEnabledUseCase: SetProductReminderEnabledUseCase,
+    private val purchaseReminderScheduler: PurchaseReminderScheduler,
 ) : CommandsFlowHandler<CartCommand, CartEvent> {
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -29,6 +33,43 @@ class CartCommandHandler @Inject constructor(
                 CartCommand.ClearCart -> {
                     clearCart()
                 }
+
+                is CartCommand.SetProductReminderEnabled -> {
+                    setProductReminderEnabled(command = command)
+                }
+            }
+        }
+    }
+
+    private fun setProductReminderEnabled(
+        command: CartCommand.SetProductReminderEnabled,
+    ): Flow<CartEvent> {
+        return flow {
+            try {
+                setProductReminderEnabledUseCase(
+                    productId = command.product.productId,
+                    enabled = command.enabled,
+                )
+
+                if (command.enabled) {
+                    purchaseReminderScheduler.schedule(
+                        product = command.product.copy(
+                            reminderEnabled = true,
+                        )
+                    )
+                } else {
+                    purchaseReminderScheduler.cancel(
+                        productId = command.product.productId,
+                    )
+                }
+            } catch (exception: CancellationException) {
+                throw exception
+            } catch (exception: Exception) {
+                emit(
+                    CartEvent.ProductReminderChangingFailed(
+                        message = exception.message ?: DEFAULT_REMINDER_ERROR_MESSAGE,
+                    )
+                )
             }
         }
     }
@@ -36,7 +77,7 @@ class CartCommandHandler @Inject constructor(
     private fun observeCartProducts(): Flow<CartEvent> {
         return observeCartProductsUseCase()
             .map { productModels ->
-                val event: CartEvent =  CartEvent.CartProductsLoaded(
+                val event: CartEvent = CartEvent.CartProductsLoaded(
                     products = productModels,
                 )
 
@@ -73,6 +114,7 @@ class CartCommandHandler @Inject constructor(
     }
 
     private companion object {
+        const val DEFAULT_REMINDER_ERROR_MESSAGE = "Не удалось изменить напоминание"
         const val DEFAULT_LOAD_ERROR_MESSAGE = "Не удалось загрузить корзину"
         const val DEFAULT_CLEAR_ERROR_MESSAGE = "Не удалось очистить корзину"
     }

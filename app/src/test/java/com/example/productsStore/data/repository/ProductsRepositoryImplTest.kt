@@ -19,6 +19,7 @@ import com.example.productsStore.data.repositoryImpl.ProductsRepositoryImpl
 import com.example.productsStore.domain.provider.time.CurrentTimeProvider
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNull
+import junit.framework.TestCase.assertTrue
 import junit.framework.TestCase.fail
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +29,72 @@ import okio.IOException
 import org.junit.Test
 
 class ProductsRepositoryImplTest {
+    @Test
+    fun `GIVEN product in cart WHEN set reminder enabled THEN cart product reminder is updated`() = runTest {
+        // GIVEN
+        val productId = 1
+
+        val cartProductDao = FakeCartDao(
+            initialProducts = listOf(
+                createCartProductEntity(
+                    productId = productId,
+                    reminderEnabled = false,
+                )
+            )
+        )
+
+        val repository = createRepository(
+            cartProductDao = cartProductDao,
+        )
+
+        // WHEN
+        repository.setProductReminderEnabled(
+            productId = productId,
+            enabled = true,
+        )
+
+        // THEN
+        val actualProduct = cartProductDao.products.first()
+
+        assertEquals(productId, actualProduct.productId)
+        assertEquals(true, actualProduct.reminderEnabled)
+    }
+
+    @Test
+    fun `GIVEN cart products WHEN get products with enabled reminders THEN only enabled products returned`() = runTest {
+        // GIVEN
+        val cartProductDao = FakeCartDao(
+            initialProducts = listOf(
+                createCartProductEntity(
+                    productId = 1,
+                    reminderEnabled = true,
+                ),
+                createCartProductEntity(
+                    productId = 2,
+                    reminderEnabled = false,
+                ),
+                createCartProductEntity(
+                    productId = 3,
+                    reminderEnabled = true,
+                ),
+            )
+        )
+
+        val repository = createRepository(
+            cartProductDao = cartProductDao,
+        )
+
+        // WHEN
+        val actual = repository.getProductsWithEnabledReminders()
+
+        // THEN
+        assertEquals(2, actual.size)
+        assertEquals(listOf(1, 3), actual.map { productModel ->  productModel.productId })
+        assertTrue(
+            actual.all { productModel -> productModel.reminderEnabled }
+        )
+    }
+
     @Test
     fun `GIVEN fresh cache WHEN refresh product details THEN do not request network`() = runTest {
         // GIVEN
@@ -372,8 +439,29 @@ class ProductsRepositoryImplTest {
         }
     }
 
-    private class FakeCartDao : CartProductDao() {
-        private val cartProductsFlow = MutableStateFlow<List<CartProductEntity>>(emptyList())
+    private class FakeCartDao(
+        initialProducts: List<CartProductEntity> = emptyList(),
+    ) : CartProductDao() {
+        private val cartProductsFlow = MutableStateFlow<List<CartProductEntity>>(initialProducts)
+
+        val products: List<CartProductEntity>
+            get() = cartProductsFlow.value
+
+        override suspend fun getProductsWithEnabledReminders(): List<CartProductEntity> {
+            return cartProductsFlow.value.filter { cartProductsEntity ->
+                cartProductsEntity.reminderEnabled
+            }
+        }
+
+        override suspend fun updateReminderEnabled(productId: Int, enabled: Boolean) {
+            cartProductsFlow.value = cartProductsFlow.value.map { cartProductEntity ->
+                if (cartProductEntity.productId == productId) {
+                    cartProductEntity.copy(reminderEnabled = enabled)
+                } else {
+                    cartProductEntity
+                }
+            }
+        }
 
         override fun observeCartProducts(): Flow<List<CartProductEntity>> {
             return cartProductsFlow
@@ -413,6 +501,24 @@ class ProductsRepositoryImplTest {
         const val ONE_HOUR_MILLIS = 60L * 60L * 1000L
         const val CACHE_TTL_MILLIS = 24L * 60L * 60L * 1000L
     }
+}
+
+private fun createCartProductEntity(
+    productId: Int = 1,
+    title: String = "Product",
+    price: Double = 10.0,
+    brand: String? = "Brand",
+    quantity: Int = 1,
+    reminderEnabled: Boolean = false,
+) : CartProductEntity {
+    return CartProductEntity(
+        productId = productId,
+        title = title,
+        price = price,
+        brand = brand,
+        quantity = quantity,
+        reminderEnabled = reminderEnabled,
+    )
 }
 
 private fun createProductDetailsDto(

@@ -47,6 +47,14 @@ class CartUpdate : DslUpdate<CartState, CartEvent, CartCommand, CartNews>() {
                     )
                 )
             }
+
+            is CartEvent.ProductReminderChangingFailed -> {
+                news(
+                    CartNews.ShowMessage(
+                        message = event.message,
+                    )
+                )
+            }
         }
     }
 
@@ -68,6 +76,30 @@ class CartUpdate : DslUpdate<CartState, CartEvent, CartCommand, CartNews>() {
 
             CartIntent.ClearCartClicked -> {
                 commands(CartCommand.ClearCart)
+            }
+
+            is CartIntent.ReminderCheckedChanged -> {
+                val currentState = state as? CartState.Success
+                val product = currentState
+                    ?.products
+                    ?.firstOrNull() { productModel ->
+                        productModel.productId == intent.productId
+                    }
+
+                if (product != null) {
+                    commands(
+                        CartCommand.SetProductReminderEnabled(
+                            product = product,
+                            enabled = intent.enabled,
+                        )
+                    )
+                } else {
+                    news(
+                        CartNews.ShowMessage(
+                            message = "Товар не найден"
+                        )
+                    )
+                }
             }
         }
     }
