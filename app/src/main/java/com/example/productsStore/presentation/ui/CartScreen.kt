@@ -26,6 +26,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -64,6 +65,7 @@ fun CartScreen(
                     if (state is CartState.Success && state.products.isNotEmpty()) {
                         Button(
                             onClick = onClearCartClick,
+                            modifier = Modifier.testTag(CartTestTags.CLEAR_CART_BUTTON),
                         ) {
                             Text(text = "Очистить")
                         }
@@ -218,7 +220,10 @@ private fun CartProductCard(
                 )
 
                 Text(
-                    text = "Количество:: ${product.quantity}",
+                    text = "Количество: ${product.quantity}",
+                    modifier = Modifier.testTag(
+                        CartTestTags.CART_PRODUCT_QUANTITY_PREFIX + product.productId
+                    ),
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }

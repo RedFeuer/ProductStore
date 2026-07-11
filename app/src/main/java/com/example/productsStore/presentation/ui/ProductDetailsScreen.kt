@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -228,6 +229,7 @@ private fun ProductImage(
     if (imageUrl == null) {
         Box(
             modifier = modifier
+                .testTag(ProductDetailsTestTags.PRODUCT_IMAGE_PLACEHOLDER)
                 .fillMaxWidth()
                 .height(120.dp)
                 .clip(RoundedCornerShape(20.dp))
@@ -244,6 +246,7 @@ private fun ProductImage(
             model = imageUrl,
             contentDescription = title,
             modifier = modifier
+                .testTag(ProductDetailsTestTags.PRODUCT_IMAGE)
                 .fillMaxWidth()
                 .height(220.dp)
                 .clip(RoundedCornerShape(20.dp)),

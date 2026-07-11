@@ -44,6 +44,11 @@ androidxTestCore = "1.7.0"
 androidxTestRunner = "1.7.0"
 junitKtx = "1.3.0"
 
+# AndroidX UI-Test
+espresso = "3.7.0"
+kaspresso = "1.6.1"
+hamcrest = "2.2"
+
 # KoTEA
 kotea = "1.3.0"
 
@@ -107,6 +112,13 @@ androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version
 androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidxTestCore" }
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunner" }
 androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitKtx" }
+
+# AndroidX UI-Test
+androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
+kaspresso = { module = "com.kaspersky.android-components:kaspresso", version.ref = "kaspresso" }
+kaspresso-compose-support = { group = "com.kaspersky.android-components", name = "kaspresso-compose-support", version.ref = "kaspresso" }
+hamcrest = { group = "org.hamcrest", name = "hamcrest", version.ref = "hamcrest" }
+
 
 # KoTEA
 kotea-core = { group = "ru.tinkoff.kotea", name = "core", version.ref = "kotea" }
