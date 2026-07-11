@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.productsStore.domain.model.ProductDetailsModel
 import com.example.productsStore.presentation.state.ProductDetailsUiState
 import com.example.productsStore.presentation.theme.ProductsStoreTheme
+import com.example.productsStore.presentation.ui.productDetails.ProductDetailsScreen
 import com.example.productsStore.presentation.ui.screen.ProductDetailsComposeScreen
 import com.kaspersky.components.composesupport.config.withComposeSupport
 import com.kaspersky.kaspresso.kaspresso.Kaspresso

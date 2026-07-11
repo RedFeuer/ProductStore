@@ -38,7 +38,7 @@ class ProductDetailsUpdate :
             is ProductDetailsEvent.ProductAddedToCart -> {
                 news(
                     ProductDetailsNews.ShowMessage(
-                        message = "Товар добавлен в корзину",
+                        message = ProductDetailsMessage.ProductAddedToCart,
                     )
                 )
             }
@@ -46,7 +46,7 @@ class ProductDetailsUpdate :
             is ProductDetailsEvent.ProductAddingToCartFailed -> {
                 news(
                     ProductDetailsNews.ShowMessage(
-                        message = event.message,
+                        message = ProductDetailsMessage.Raw(message = event.message),
                     )
                 )
             }
@@ -87,7 +87,7 @@ class ProductDetailsUpdate :
                 } else {
                     news(
                         ProductDetailsNews.ShowMessage(
-                            message = "Товар еще не загружен"
+                            message = ProductDetailsMessage.ProductNotLoadedYet
                         )
                     )
                 }
@@ -113,7 +113,7 @@ class ProductDetailsUpdate :
         }
 
         state {
-            copy (
+            copy(
                 contentState = ProductDetailsContentState.Success(
                     product = cachedProductDetails.product,
                     isStale = cachedProductDetails.isStale,
@@ -128,7 +128,7 @@ class ProductDetailsUpdate :
         if (state.contentState is ProductDetailsContentState.Success) {
             news(
                 ProductDetailsNews.ShowMessage(
-                    message = event.message,
+                    message = ProductDetailsMessage.Raw(message = event.message),
                 )
             )
         } else {

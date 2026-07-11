@@ -30,7 +30,7 @@ class CartViewModel @Inject constructor(
 
     init {
         store.launchIn(
-            coroutineScope = viewModelScope + Dispatchers.Unconfined,
+            coroutineScope = viewModelScope,
         )
     }
 

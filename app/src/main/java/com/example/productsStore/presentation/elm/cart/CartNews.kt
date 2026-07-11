@@ -8,6 +8,6 @@ sealed interface CartNews {
     ) : CartNews
 
     data class ShowMessage(
-        val message: String,
+        val message: CartMessage,
     ) : CartNews
 }

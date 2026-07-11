@@ -130,4 +130,7 @@ dependencies {
     implementation(libs.kotea.core)
     implementation(libs.kotea.android)
     implementation(libs.kotea.compose)
+
+    /* ImmutableCollections */
+    implementation(libs.kotlinx.collections.immutable)
 }
